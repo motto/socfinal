@@ -1,9 +1,19 @@
 <?php
 namespace lib\base;
+trait File_ToFile{
+public    function ToFile($content='',$path='',$utf8=true ){
+  //  if ($content=='') {$content=$this->ADT['content'] ?? '';}
+  //  if ($path=='') {$path=$this->ADT['path'] ?? '';$path=$this->path ?? '';}
+    $fp = fopen($path, 'w');
+    //fputs($fp, $bom =( chr(0xEF) . chr(0xBB) . chr(0xBF) ));
+    if($utf8) {fwrite($fp, "\xEF\xBB\xBF".$content);}
+    else{fwrite($fp, $content);}
+    fclose($fp);
 
-class File{
-
-	static public function  readCSV($filepath,$sep=','){
+}
+}
+trait File_ReadCSV{
+    public    function ReadCSV($filepath,$sep=','){
 		$fileT=[];
 		$file = fopen($filepath, 'r');
 		while (($line = fgetcsv($file)) !== FALSE) {
@@ -12,7 +22,9 @@ class File{
 		fclose($file);
 		return $fileT;
 	}
+}
 
+class File{
 	
 /**
 ha a mezőtomb üres az elsősorból veszi a mezőneveket

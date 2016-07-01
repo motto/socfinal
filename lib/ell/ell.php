@@ -7,15 +7,12 @@ Az  $ELL=new Ell; $ADT=$ELL->res($ADT,$TSK); formában App és modul ostályokba
 class Ell
 {
 use \lib\ell\trt\Ell;
-
+public $ADT=[];
 	public function __construct($parT = []){
 		foreach ($parT as $name => $value)
-		{if(isset($this->$name)){$this->$name=$value;}}
+		{$this->ADT[$name]=$value;}
 	}
 
-	public function res($ADT,$TSK){
-		return $this->ell($ADT, $TSK);
-	}
 }
 
 
@@ -27,6 +24,7 @@ use \lib\ell\trt\DB_marvan;
 use \lib\ell\trt\DB_validPassvd;
 	
 }
+
 class Ell_STR
 { 
 
@@ -66,7 +64,7 @@ static public function tartalmak_divekebn($text){
 	}
 	
 
-	
+}	
 	
 /*	//select integers only
 	var intRegex = /[0-9 -()+]+$/;
@@ -127,4 +125,3 @@ jquery:
 	
 
 
-}

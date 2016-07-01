@@ -1,5 +1,5 @@
 <?php
-namespace mod\login\trt\task\;
+namespace mod\login\trt\task;
 defined( '_MOTTO' ) or die( 'Restricted access' );
 trait view_trt{ public function tres($ADT,$TSK)
 {

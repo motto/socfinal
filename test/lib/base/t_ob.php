@@ -1,5 +1,30 @@
 <?php
 namespace lib\base;
+use lib;
+
+trait Ob1{ public  function Ob1(){
+   return 'ob1'; 
+}}
+
+trait Ob2{ public  function Ob2(){
+   return  'ob2';
+}}
+trait Ob3{ public  function Ob3(){
+
+    return $this->ob1().$this->ob2(). $this->ADT['ok'];
+}}
+
+echo "\n t_ob:------------- \n";
+$adt=['ok'=>'okval'];
+$trtT=['lib\base\ob1','neves'=>'lib\base\ob2','lib\base\ob3'];
+$res=lib\base\Ob_TrtS::minRes( $trtT,$adt,'ob3');
+//echo 'hjafkf='.$res;
+if($res=='ob1ob2okval'){	echo " ok,";	
+}else{echo '!!!,';
+		\GOBT::$resT['T_ob']['minres']='1';
+		}
+
+
 /*
 class T_ob extends OB_Mo{
 	public $gg='gg';
@@ -101,4 +126,4 @@ class
 echo "Testob:------------- \n";
 
 T_OBb::test();
-T_OBb::testTomb();/*
+T_OBb::testTomb();*/

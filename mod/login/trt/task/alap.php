@@ -1,10 +1,10 @@
 <?php
-namespace mod\login\trt\task\;
+namespace mod\login\trt\task;
 defined( '_MOTTO' ) or die( 'Restricted access' );
 
-trait alap_trt{ public function alap($ADT,$TSK)
+trait Alap{ public function Alap()
 {
-	if( $_SESSION['userid']==0){$ADT::$next='belepform';}
-	else{$ADT::$next='kilepform';}
-	return 	$ADT;
+	if( $_SESSION['userid']==0){$this->ADT['next']='belepform';}
+	else{$this->ADT['next']='kilepform';}
+
 }}

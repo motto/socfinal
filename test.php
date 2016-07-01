@@ -8,36 +8,25 @@ include 'def.php';
 
 //include 'test/mod/login/t_login.php';
 
-
-
-
 class GOBT{
-	
-	
-	static public $resT=[];
+	static public  $resT;
 }
-class test{
-	use lib\lang\trt\single\tomb\Get_LT;
 
-}
-$test=new test();
 
-print_r($test->getModLT('login'));
 //include 'test/lib/base/t_task.php';
-//
 //include 'test/lib/base/t_link.php';
 //include 'test/lib/base/t_ob.php';
 //include 'test/lib/ell/t_ell.php';
 //include 'test/lib/base/t_base.php';
-//probák  nem teszttek!!!!!!!---------------------------------
-//include 'test/lib/html/t_html.php';
+//probák  nem tesztek!!!!!!!---------------------------------
+include 'test/lib/html/t_html.php';
 //include 'test/lib/base/p_file.php';
 //include 'test/lib/itemview/p_itemview.php'; 
 if(empty(GOBT::$resT)){echo "\n a tesztek sikeresen lefutottak!";}else{
 echo"\n A kovetkező tesztek nem futottak le sikeresen: ";
 foreach(GOBT::$resT as $clas=>$func){ echo "\n class:".$clas." func: ";}	
-foreach($func as $funcnev=>$val){ echo "\n".$funcnev.",".$val."; ";}
+foreach($func as $funcnev=>$val){ echo $funcnev.",".$val."; ";}
 
 }
-
+echo 'Futás idő:'.(microtime(true) - $_SERVER['REQUEST_TIME_FLOAT']).'microsec';
 //ObMo_St::res();

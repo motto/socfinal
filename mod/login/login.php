@@ -1,33 +1,44 @@
 <?php
 namespace mod\login;
+
 use lib\base\Ob_Trt;
 use lib\base\Task;
-use lib\html\FeltoltS;
 
 
 defined( '_MOTTO' ) or die( 'Restricted access' );
 include_once 'mod/login/par.php';
+
+/*
 //azért kell associativ tömb hogy felül  írható legyen!
  \CONF:: $baseTRT=['temp'=>'',
 					'task'=>'trt\task\Task_PostGet'
 					];
-$loginTRT=\CONF:: $baseTRT;//hogy cáltoztatható legyen
+$loginTRT=\CONF:: $baseTRT;//hogy változtatható legyen
+*/
 
 
 
+/**
+ha sima use-val használjuk a traiteket nem tudunk beépíteni változókat pl:CONF::$LangMode
+ */
 abstract class loginbase{}; //csak azét kell hogy ne legyen figyelmeztetés
 
 $loginTRT['lang']='lib\lang\trt\\'.\CONF::$LangMode.'\\'.\CONF::$LangForras.'\Get_LT';
 $loginTRT['getTask']='trt\task\Task_PostGet';
+$loginTRT['feltolt']='trt\task\Task_PostGet';
 
-eval(Ob_Trt::str('loginbase', $loginTRT))	; //loginbase osztály generálása	
+eval(Ob_Trt::str('loginbase', $loginTRT))	; //loginbase osztály generálása, 	
 
 class Login extends loginbase
-{
-	protected $ADT=[];
+{ 
+	//protected $ADT=[]; //az Ob_Trt::str -el előállított osztályokban benne van!
 	
 	public function __construct($parT = []){
-		
+		$this->ADT = get_class_vars('mod\login\ADT');
+		$this->ADT['TSK']=get_class_vars('mod\login\TSK');
+		$this->setADT($parT); 
+	}
+	public function setADT($parT = []){
 		foreach ($parT as $name => $value)
 		{$this->ADT[$name]=$value;}
 	}
@@ -44,28 +55,27 @@ class Login extends loginbase
 		return $res;
 		
 	}
-    public function result($parT=[])
-    {	
-//!!! ha több modul is futhat egyidőben más modulnevet kell megadni (ez lesz a tasknév is)!!!
-    	//if(isset($parT['modnev'])){ADT::$modnev=$parT['modnev'];}
+    public function Login($parT=[])
+    {	//$this->ADT feltöltése
+    	$this->setADT($parT);
     	
     	//nyelvi tömb feltöltése parameter: mod könytár neve (modulnev nem a modul object neve) 	
-    	ADT::$LT =$this->getModLT('login');//trt: lang
+    	$this->getModLT('login');//trt: lang
     	
     	//futtatamdó task előállítása
-        ADT::$task =self::getTask(ADT::$modnev);//trt: getTask
+        $this->getTask(ADT::$modnev);//trt: getTask
         
         //Post elemek ellenőrzése
-        $elo=new \lib\ell\Ell(); 
-        $ADT=$elo->res(ADT::class,TSK::class);
+       // $this->ell(); //trt: ell
         
         //modulnev+task osztály generálás futtatás
-        $ADT=Task::res($ADT,TSK::class); 
+        $this->task(); 
+        
         // A :view feltöltése nyelvi elemekkel
-        $ADT=$this->feltolt($ADT,TSK::class); 
+        $this->feltolt(); 
         
 	  
-        return $ADT::$view;
+        return $this->ADT['view'];
     }
  
 }
@@ -75,7 +85,7 @@ class Login_S
 	static public function res($parT=[]){
 		
 		$ob=new Login();
-		return $ob->result($parT);
+		return $ob->Login($parT);
 	}
 	
 }

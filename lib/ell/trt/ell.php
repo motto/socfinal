@@ -2,22 +2,24 @@
 namespace lib\ell\trt;
 use lib;
 
+
 defined( '_MOTTO' ) or die( 'Restricted access' );
-trait Ell_match{
-	public  function match($val2,$err='no_match',$changeT=[])
+trait Ell_Match{
+	public  function Match($val2,$err='no_match',$changeT=[])
 	{	$res=[];$res['bool']=true;$res['changeT']=$changeT;
 	if($this->val!=$val2){ $res['bool'] = false; $res['err']=$err;}
 	return $res;
 	}}
 
-trait Ell{
+
+
+trait Ell_ELL{
 public $val='';	
 
-public  function ell($ADT,$TSK)
+public  function Ell()
 {	
-$task=$ADT::$task;
-$ellT=$TSK::${$task}['ell'];
-if(isset($ADT::$modnev)){$this->hibamezo=$ADT::$modnev;}
+$task=$this->ADT['task'];
+$ellT=$this->ADT['TSK'][$task]['ell'];
 
 foreach ($ellT as $valnev=>$param){
 	$bool=true;
@@ -28,7 +30,7 @@ foreach ($ellT as $valnev=>$param){
 			
 			foreach ($par as $parT){
 			$res=$this->regx($parT);
-			if(!$res['bool']){$this->hibaToGOB($ADT::$LT,$res,$ADT::$modnev); $bool=false;}
+			if(!$res['bool']){$this->hibaToADT($res); $bool=false;}
 			}
 			
 		}
@@ -36,27 +38,29 @@ foreach ($ellT as $valnev=>$param){
 			eval('$res=$this->'.$func.'('.$par.');');
 			//print_r($res);
 			//'$this->'.$func.'('.$par.');';
-			if(!$res['bool']){$this->hibaToGOB($ADT::$LT,$res,$ADT::$modnev);$bool=false;}
+			if(!$res['bool']){$this->hibaToADT($res);$bool=false;}
 		}
 				
 	}
 	
-	if($bool){$ADT::$SPT[$valnev]=$this->val;}
+	if($bool){$this->ADT['SPT'][$valnev]=$this->val;}
+	
 	
 }
-return 	$ADT;
+
 }	
-public function hibaToGOB($LT,$res,$hibamezo){
-	//$res['changeT']=[];
-		if(isset($LT[$res['err']])){$err=$LT[$res['err']];}
-		else{$err=$res['err'];}
+public function hibaToADT($errT){
+	$err=$errT['err'];
+	$LT=$this->ADT['LT'];
+		if(isset($LT[$err])){$err=$LT[$err];}
 		
-	foreach ($res['changeT'] as $nev=>$val){
+		
+	foreach ($errT['changeT'] as $nev=>$val){
 		
 		if(isset($LT[$val])){$val=$LT[$val];}	
 		$err= str_replace('<<'.$nev.'>>', $val, $err);
 	}
-	\GOB::$hiba[$hibamezo][]=$err;
+	$this->ADT['errT'][]=$err;
 
 }
 

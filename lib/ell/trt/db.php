@@ -4,9 +4,9 @@ use lib;
 
 defined( '_MOTTO' ) or die( 'Restricted access' );
 
-trait DB_marvan{
+trait DB_Marvan{
 
-public  function marvan($mezonev,$tabla,$err='already_have',$changeT=[])
+public  function Marvan($mezonev,$tabla,$err='already_have',$changeT=[])
 {
 	$res=[];$res['bool']=true;$res['changeT']=$changeT;
 	$sql = "SELECT " . $mezonev . " FROM  " . $tabla . " WHERE " . $mezonev . "='" . $this->val . "'";
@@ -17,7 +17,7 @@ public  function marvan($mezonev,$tabla,$err='already_have',$changeT=[])
 }
 }
 
-trait DB_validPassvd{
+trait DB_ValidPassvd{
 public  function validPassvd($usernev,$err='Passwd_error',$changeT=[]){
 	$res=[];$res['bool']=true;$res['changeT']=$changeT;
 	$md5passwd=md5($this->val);

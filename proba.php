@@ -1,10 +1,48 @@
 <?php
-// substr('gjhgj_LT', -2);
+$h='dfgsdgsdf,';
+echo substr($h, 0, -1) ;
+
+
+$T=[' <div class="mbr-article mbr-article--wysiwyg col-sm-8 col-sm-offset-2" lng="hu"><p>Az interneten számos olyan weblap érheto el,melyek látogatásonkénk fizetnek, például &nbsp;Bitcoinban. Ezeket az oldalakat másnéven fauceteknek, csaptelepeknek hívjuk. Igaz ezek az oldalak bárki számára elérhetoek, viszont felkutatásuk és rendszerezésük meglehetosen idoigényes. Ezért a Socialbittap csapata célul tuzte ki, hogy &nbsp;idorol idore összegyujti, szuri és optimalizált &nbsp;felületen elérhetové teszi felhasználói számára a megbízható és jólzeto weboldalakat'=>'dfgüöügdfg'];
+echo $T['<div class="mbr-article mbr-article--wysiwyg col-sm-8 col-sm-offset-2" lng="hu"><p>Az interneten számos olyan weblap érheto el,melyek látogatásonkénk fizetnek, például &nbsp;Bitcoinban. Ezeket az oldalakat másnéven fauceteknek, csaptelepeknek hívjuk. Igaz ezek az oldalak bárki számára elérhetoek, viszont felkutatásuk és rendszerezésük meglehetosen idoigényes. Ezért a Socialbittap csapata célul tuzte ki, hogy &nbsp;idorol idore összegyujti, szuri és optimalizált &nbsp;felületen elérhetové teszi felhasználói számára a megbízható és jólzeto weboldalakat'];
+
+/*
+$b=['hhh'];
+$a = $b['gg'] ?? true; $b['gg']='hh';
+echo $a ;
+if($a===$b['gg'] ?? true) {echo 'true';}
+
+trait Ell2{ public  function ell(){
+   echo("ell2");
+    
+}}
+trait Ell3{ public  function ell3(){
+    echo("ell3");
+
+}}
+trait Ell4{ 
+ use Ell3;  
+    public  function ell4(){
+    echo("ell4");
+
+}}
+
+class gg{
+// use Ell ;   
+ use Ell2 {Ell2::ell as ell2;} 
+ use Ell4;    
+    
+}
+$l=explode('_', 'Ell_ghh_ELL');
+$gyumolcs = array_pop ($l); //
+echo $gyumolcs;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
+$gg=new gg();
+$gg->ell2();
+$gg->ell3();
+/ /substr('gjhgj_LT', -2);
 $val='gjhgj_LT';
 $val=substr($val, 0,-3);
 echo $val;
-/*
-
 $a=2;$b='b';
 $par='[$a,"ha"=>"haha"]';
 function proba2($a,$b){

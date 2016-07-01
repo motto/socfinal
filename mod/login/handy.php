@@ -1,13 +1,13 @@
 <?php
 class Handy{
-	public static function hibakiir($ADT)
+	public function hibakiir($ADT)
 	{
 		$result='';
-		if(isset(\GOB::$hiba[$ADT::${'modnev'}]))
-		{ $hibaT = array_unique(\GOB::$hiba[$ADT::${'modnev'}]);
+	
+		{ $hibaT = array_unique($this->ADT['hibaT']);
 		foreach($hibaT as $hiba)
 		{
-			$result.=$hiba.'</br>';
+			$result.='<h4>'.$hiba.'</h4>';
 		}
 		}
 		return $result;
