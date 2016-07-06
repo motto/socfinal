@@ -1,46 +1,10 @@
 <?php
-namespace lib\base;
+namespace test\lib\html;
 
-use lib\html\html;
-trait Dom_data_Find {
-    public  $reg='';
 
-    /*
-     *
-     'DIV'=>'#<div[^>]*>(.*?)</div>#', //le kell ellenőrizni
-     'DIV_CLASS'=>'/<div class=\"main\">([^`]*?)<\/div>/'
-      
-     */
-     
-    function Find() {
-        $matches=[];
-        $view= file_get_contents('test/view/testform.html',true);
-        //preg_match_all ("/\<input([^`]*?)\>/",$view , $matches);
-        preg_match_all ("/\<([^>]*?)data=\"([^`]*?)\>/",$view , $matches);
-        $mezotomb=$matches[0];
-        foreach ($mezotomb as $mezo) {
-           // =[];
-            preg_match('/^([^`]*?)type="(radio|checkbox)"([^`]*?)$/', $mezo, $checked);
-            if (!empty($checked)) {
-              $checkedT[]=$checked[0]  ;
-            }
-            $inputT=[];
-            preg_match('/^([^`]*?)type="(radio|checkbox)"([^`]*?)$/', $mezo, $inputT);
-            $innerT=[];
-            preg_match('/^([^`]*?)type="(radio|checkbox)"([^`]*?)$/', $mezo, $innerT);
-          
-          
-            
-          //  if(!empty($matc2[1])){echo $mezo;}
-               
-        }
-        
-       print_r($checkedT);
-    }
-}
 class T_html{
-use Dom_data_Find;
-
+//use Dom_data_Find;
+use Dom_ChangeFull;
 	static public function fejlec(){
 	
 		echo "\n T_html::fejlec: ";
@@ -97,10 +61,8 @@ use Dom_data_Find;
 
 
 echo "TestHTML:------------- ";
-$html=new T_html();
-$html->Find();
-//
-//echo html::get_Tmpl('test/proba.html');
+
+echo html::get_Tmpl('test/proba.html');
 //echo html::get_modTmpl('test/probamod.html','proba');
 
 

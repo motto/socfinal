@@ -12,7 +12,7 @@ function betolt($className)
     }
     $fileName .= str_replace('_', DIRECTORY_SEPARATOR, $className) . '.php';
      $fileName =strtolower($fileName);//saját (kisbetűsítés) nem igazán kell
-    if(is_file($fileName)) {require $fileName;}
+    if(is_file($fileName)) {require_once  $fileName;}
     //echo $fileName;
 }
 function betolt2($className)

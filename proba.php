@@ -1,12 +1,17 @@
 <?php
+$elem ='<textarea name="comment" lt="ltttt" placeholder="placeholder" data="text1">';
+$par='placeholder="';
+preg_match_all('/'.$par.'([^`]*?)"/',$elem , $match);
+echo  $match[1][0] ;
+
+
+/*
+
 $h='dfgsdgsdf,';
 echo substr($h, 0, -1) ;
-
-
 $T=[' <div class="mbr-article mbr-article--wysiwyg col-sm-8 col-sm-offset-2" lng="hu"><p>Az interneten számos olyan weblap érheto el,melyek látogatásonkénk fizetnek, például &nbsp;Bitcoinban. Ezeket az oldalakat másnéven fauceteknek, csaptelepeknek hívjuk. Igaz ezek az oldalak bárki számára elérhetoek, viszont felkutatásuk és rendszerezésük meglehetosen idoigényes. Ezért a Socialbittap csapata célul tuzte ki, hogy &nbsp;idorol idore összegyujti, szuri és optimalizált &nbsp;felületen elérhetové teszi felhasználói számára a megbízható és jólzeto weboldalakat'=>'dfgüöügdfg'];
 echo $T['<div class="mbr-article mbr-article--wysiwyg col-sm-8 col-sm-offset-2" lng="hu"><p>Az interneten számos olyan weblap érheto el,melyek látogatásonkénk fizetnek, például &nbsp;Bitcoinban. Ezeket az oldalakat másnéven fauceteknek, csaptelepeknek hívjuk. Igaz ezek az oldalak bárki számára elérhetoek, viszont felkutatásuk és rendszerezésük meglehetosen idoigényes. Ezért a Socialbittap csapata célul tuzte ki, hogy &nbsp;idorol idore összegyujti, szuri és optimalizált &nbsp;felületen elérhetové teszi felhasználói számára a megbízható és jólzeto weboldalakat'];
 
-/*
 $b=['hhh'];
 $a = $b['gg'] ?? true; $b['gg']='hh';
 echo $a ;

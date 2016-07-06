@@ -19,7 +19,8 @@ class GOBT{
 //include 'test/lib/ell/t_ell.php';
 //include 'test/lib/base/t_base.php';
 //probák  nem tesztek!!!!!!!---------------------------------
-include 'test/lib/html/t_html.php';
+//include 'test/lib/html/t_html.php';
+include_once 'test/lib/html/t_dom.php';
 //include 'test/lib/base/p_file.php';
 //include 'test/lib/itemview/p_itemview.php'; 
 if(empty(GOBT::$resT)){echo "\n a tesztek sikeresen lefutottak!";}else{
