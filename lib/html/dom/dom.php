@@ -3,17 +3,8 @@ namespace lib\html\dom;
 
   //pl.: mod\login;
 defined( '_MOTTO' ) or die( 'Restricted access' );
-class Dom_s_csere{
-  static   public function inner($view,$elem,$data){
-      $ujmezo=$elem.$data.'</';
-      return preg_replace("/".$elem."([^`]*?)<\//",$ujmezo, $view);
-  } 
-  static   public function lt($view,$elem,$data){
-      $ujmezo=$elem.$data.'</';
-      return preg_replace("/".$elem."([^`]*?)<\//",$ujmezo, $view);
-  }
-}
-class Dom_s_jqery{
+
+class Dom_s{
  //html manipuláló************************************************* 
  /**
 A getElemT első elemével tér vissza (string)
@@ -24,39 +15,150 @@ A getElemT első elemével tér vissza (string)
     }  
  /**
 A $htm stringből egy tömbbe gyűjti $param parméter $value értékével rendelkező elemeket
+$param stringben több paraméter is megadhatunk|-vel elvállasztva pl.: 'lt|ltdat'
 ha nem adunk meg $valuet az osszes $param -al rendelkező elemet kigyűjti
 ha üreset adunk meg csak az üreseket. tesztelve 
   */   
  static   public function getElemT($html,$param,$value='([^<]*?)') {
 
-        preg_match_all('/\<([^>]*?)' . $param . '="'.$value.'"([^<]*?)\>/', $html, $elemek);
+        preg_match_all('/\<([^>]*?)([<" ])(' . $param . ') *= *"'.$value.'"([^<]*?)\>/', $html, $elemek);
         return $elemek[0];
     }
-static   public function getLTSelectedT($html){
-  $elemT=  self::getElemT($html,'lt');
-  foreach ($elemT as $elem) {
-      $nev=getParam($elem,'placeholder')['bool']
-     if(!getParam($elem,'placeholder')['bool']){
-         
-     }
-  }
-  
-}
-static   public function getDataSelectedT($html,$param,$value='([^<]*?)'){}
 
-//elem manipuláló*********************************************************   
+static   public function getLTSelectedT($html){
+  $elemT=  self::getElemT($html,'lt|ltdat');
+  foreach ($elemT as $elem) {
+  	$value=self::getParamVal($elem,'placeholder');
+    $nev=self::getParamVal($elem,'lt|ltdat');
+    if(self::getParamVal($elem,'type')=='text'){$type='placeholder';}
+    else if(in_array(self::getParamVal($elem,'type'),['button','submit']))
+    {$type='button'; $value=self::getParamVal($elem,'value');   }
+   	else if(self::haveSTR($elem,'<textarea')){$type='placeholder';}
+    else{$type='inner';
+    $value=self::getInner($html,$elem);
+    } 
+   $res[]=['type'=>$type,'val'=>$value,'elem'=>$elem,'nev'=>$nev];
+  }
+  return $res;
+}
+
+static   public function getDataSelectedT($html){
+	$elemT=  self::getElemT($html,'dat|ltdat');
+	foreach ($elemT as $elem) {
+		$value=self::getParamVal($elem,'value');
+		$nev=self::getParamVal($elem,'dat|ltdat');
+		if(self::haveSTR($elem,'<input')){$type='input';
+		
+			if(in_array(self::getParamVal($elem,'type'),['radio','checkbox']) )
+			{$type='checked';}
+		
+		}
+		else{$type='inner';
+		$value=self::getInner($html,$elem);
+		}
+		$res[]=['type'=>$type,'val'=>$value,'elem'=>$elem,'nev'=>$nev];
+	
+	}
+	return $res;		
+}
+static   public function changeInner($view,$elem,$data){
+	$ujmezo=$elem.$data.'</';
+	return preg_replace("/".$elem."([^`]*?)<\//",$ujmezo, $view);
+}
+/**
+nem használt csak egy sort vált ki
+ */
+static   public function ChangeElem($view,$elem,$ujelem){
+	return $view= str_replace($elem,$ujelem, $view); ;
+}
+static   public function ChangeLT($view,$LT){
+$elemT=self::getLTSelectedT($view);
+foreach ($elemT as $elem) 
+{
+
+	if(isset($LT[$elem['nev']]))
+	{
+		switch ($elem['type']) {
+		    case 'button':
+		    	
+		     	$ujelem=self::setParam($elem['elem'], 'value',$LT[$elem['nev']]);
+		    	$view= str_replace($elem['elem'],$ujelem, $view);
+		        break;
+		    case 'placeholder':
+		    	
+		    	$ujelem=self::setParam($elem['elem'], 'placeholder',$LT[$elem['nev']]);
+		 		$view=str_replace($elem['elem'],$ujelem, $view);      
+		        break;
+		    case 'inner':
+		    	$view=self::changeInner($view,$elem['elem'],$LT[$elem['nev']]);
+		        break;
+		}
+	}
+}
+return  $view;
+	
+}
+static   public function ChangeLT($view,$dataT){
+	$elemT=self::getDataSelectedT($view);
+	foreach ($elemT as $elem)
+	{
+
+		if(isset($LT[$elem['nev']]))
+		{
+			switch ($elem['type']) {
+				case 'input':
+					 
+					$ujelem=self::setParam($elem['elem'], 'value',$dataT[$elem['nev']]);
+					$view= str_replace($elem['elem'],$ujelem, $view);
+					break;
+				case 'checked':
+					 
+					$ujelem=self::setParam($elem['elem'], 'placeholder',$dataT[$elem['nev']]);
+		 		$view=str_replace($elem['elem'],$ujelem, $view);
+		 		break;
+				case 'inner':
+					$view=self::changeInner($view,$elem['elem'],$dataT[$elem['nev']]);
+					break;
+			}
+		}
+	}
+	return  $view;
+
+}
+//elem manipuláló*********************************************************  
+/**
+true val tér vissza ha a $textben van $str. $str lehet regex is.
+ */
+static   public function haveSTR($text,$str) {
+	$bool=true;$match=[];
+	preg_match('/'.$str.'/', $text, $match);
+	if(empty($match[0])){ $bool= false;}
+	return $bool;
+}
+static   public function getInner($html,$elem) {
+	$match=[];
+	preg_match('/'.$elem.'([^`]*?)<\//', $html, $match);
+	if(empty($match[0])){ $bool= false;}
+	return $match[1];
+}
+
+static   public function getParamBool($elem,$param) {
+	$res=true;$match=[];
+	preg_match('/([<" ])('.$param.') *= *"([^`]*?)"/', $elem, $match);
+	if(empty($match[0])){ $res= false;}
+	return $res;
+}
     /** 
  tesztelve: vissatérési érték tömb!!!  res['res']=az elem $param paraméterének értéke 
  illetve ha van olyan paraméter a res['bool']=true ha nincs false.
   */  
- static   public function getParam($elem,$param) {
-    $res['bool']=true;
-        preg_match_all('/'.$param.'="([^`]*?)"/', $elem, $match);
-        if(empty($match[0][0])){ $res['bool']= false;}
-       $res['res']= $match[1][0] ?? '';
+ static   public function getParamVal($elem,$param) {
+		$match=[];
+       preg_match('/([<" ])('.$param.') *= *"([^`]*?)"/', $elem, $match);
+ 		$res=$match[3] ?? '';
+ 		//print_r($match);
        return $res;
       
-        
     }
  /**
 tesztelve: a $elem string $param paraméterét kicseréli $data értékkre 
@@ -64,18 +166,20 @@ tesztelve: a $elem string $param paraméterét kicseréli $data értékkre
   */ 
  static   public function setParam($elem,$param,$data='',$forced=true) {
   
-            preg_match_all('/' . $param . '="([^`]*?)"/', $elem, $match);
+            preg_match('/([<" ])('.$param .' *= *)"([^`]*?)"/', $elem, $match);
            
            if (empty($match[0])) { 
                if ($forced)
                {
-                $ujvalue = ' '.$param .'="'. $data. '" >';
-                $elem = str_replace('>', $ujvalue, $elem);
+               	preg_match("/>|\/>/", $elem, $outT);
+               	$veg=$outT[0];
+                $ujvalue = ' '.$param .'="'. $data. '" '.$veg;
+                $elem = preg_replace('/>|\/>/', $ujvalue, $elem);
                }
             } 
             else{
                 $ujvalue = $param .'="'. $data. '"';
-                $elem = preg_replace('/' . $param . '="([^`]*?)"/', $ujvalue, $elem); 
+                $elem = str_replace( $match[2].'"'.$match[3].'"', $ujvalue, $elem); 
             }
                 
         return $elem;
@@ -86,8 +190,7 @@ a $névparam paraméter értéke a $dataT kulcsa
  */    
 static   public function setParamFromT($elem,$param='val',$nevparam='name',$dataT,$forced=true) {
 
-        preg_match_all('/'.$nevparam.'="([^`]*?)"/',$elem , $match);
-        $mezonev = $match[1][0] ?? '';
+        $mezonev =self::getParamVal($elem, $nevparam) ;
 
         if ($mezonev !='' && isset($dataT[$mezonev])) {
             
@@ -137,132 +240,20 @@ static public function setParamFromLT($elem,$LT,$forced=true){
     }
     static public function toArray($view,$langT=['hu','en','de'],$oldT=[])
     {
-      $ltelemT= \lib\html\dom\Dom_s_find::lt($view,true);
+      $ltelemT= \lib\html\dom\Dom_s::getLTSelectedT($view);
       $resT=[];
-      foreach ($ltelemT as $key => $elemek) {    
-         foreach ($elemek as $nev => $elem) {   
-             $textarea=false;$value=[];
-            if (substr($elem, 0, 9) == '<textarea' || substr($elem,0, 10) == '< textarea')
-            {$textarea=true;}   
-            if($key=='input' || $textarea)
-            {preg_match('/placeholder="([^`]*?)\"/', $elem,$value );}
-            else{preg_match('/'.$elem.'([^`]*?)<\//', $view,$value );}
+      foreach ($ltelemT as $elemT) {    
+      	$nev=$elemT['nev'];
+      	$value=$elemT['val'];
               foreach ($langT as $lang){
                   $ertek='';
                   if(isset($oldT[$nev][$lang])){$ertek=$oldT[$nev][$lang];}
-                  if($lang==$langT[0] && !empty($value[1])){$ertek=$value[1];} 
+                  if($lang==$langT[0] && !empty($value)){$ertek=$value;} 
                     $resT[$nev][$lang]=$ertek;   
               }
-        }
+
       }
         return $resT; 
     }    
 }
-
-class Dom_s_find{
-   /**
-alap függvény, $view stringből kigyűjti egy több dimenziós tömbbe 
-a $tag taggal rendelkező elemeket. Tömb kulcsok: 'input','checked','inner' . 
-    */ 
-    static   public function find($view,$tag,$res = [],$uniq=false)
-    {
-            preg_match_all("/\<([^>]*?)" . $tag . "([^`]*?)\>/", $view, $elemek);
-           $nev3=0;$nev1=0;$nev2=0;
-            foreach ($elemek[0] as $elem) {
-              
-               if($uniq){preg_match('/'. $tag . '([^`]*?)\"/', $elem, $nev);
-               $nev3=$nev1=$nev2=$nev[1] ?? null;
-               }
-                if (substr($elem, 0, 6) == '<input' || substr($elem, 7) == '< input') 
-                {
-                    preg_match('/type="(radio|checkbox)"/', $elem, $checked);
-         
-                    if (empty($checked)) {
-                       if(!$uniq) {$nev3++;} 
-                        $res['input'][$nev3] = $elem;
-                    } else {
-                       if(!$uniq) {$nev1++;} 
-                        $res['checked'][$nev1] = $elem;
-                    }
-                }              
-                else {
-                    if(!$uniq) {$nev2++;} 
-                    $res['inner'][$nev2] = $elem;
-                }
-            }
-        return $res;
-    }
-   
-    static public function data($view){
-       $res= self::find($view,'dat="');
-       return self::find($view,'ltdat="',$res);
-    }
-    static public function lt($view,$uniq=false){
-       $res= self::find($view,'lt="',[],$uniq);
-       return self::find($view,'ltdat="',$res,$uniq);
-    }
-    
-}
-
-
-
-
-/**
- függőség elkerüló osztály az ugynilyen nevű trait használja
- */
-/*
- class Dom_changeLT
- {
- use Dom_lt_inner ;
- use Dom_lt_input ;
- use Dom_changeFromT ;
- use Dom_find;
-
- public function res($view, $LT = [])
- {
- $elemT = $this->Find($view, 'lt=\"');
- return $this->changeFromT($view, $elemT, $LT); // $view
- }
- }
- /**
- függőség elkerüló osztály az ugynilyen nevű trait használja
- */
-/*
- class Dom_changeData
- {
- use Dom_data_checked ;
- use Dom_data_input ;
- use Dom_data_inner ;
- use Dom_changeFromT ;
- use Dom_find;
-
- public function res($view, $dataT = [])
- {
- $elemT = $this->Find($view, 'data=\"');
- return $this->changeFromT($view, $elemT, $dataT); // $view
- }
- }
- 
- }
- class Dom_s_inner{
- static public function inner($elem,$nevparam,$view,$dataT){
- preg_match_all('/'.$nevparam.'([^`]*?)"/',$elem , $match);
- $mezonev= $match[1][0] ;
- if(isset($dataT[$mezonev]))
- {
- $ujmezo=$elem.$dataT[$mezonev].'</';
- $view= preg_replace("/".$elem."([^`]*?)<\//",$ujmezo, $view);
- }
- return $view;
- }
- static public function innerData($elem,$view,$dataT){
- return self::inner($elem,'value="',$view,$dataT) ;
- }
- static public function innerLt($elem,$view,$LT){
- return self::inner($elem,'lt="',$view,$LT) ;
- }
-  
- }
-
- */
 

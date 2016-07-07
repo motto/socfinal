@@ -27,7 +27,15 @@ class T_dom{
 	
 }
 class T_szotar{
-    
+	static public function haveSTR(){
+		//$text='< asdfhswfh dat l = "jhg jh " id 2="" id name="" >< ltdat="" >';
+		$text='< asdfhswfh dat l = "jhg jh "h     id =""   id name="" >< ltdat="" >';
+       // $str='([^a-z A-Z 1-9 " ]*)id([ ]*)=([ ]*?)"([^`]*?)"';
+		$str='([]*)id([ ]*)=([ ]*)"([^`]*?)"';
+        //$str='([ ]*?)(id|dat)([ ]*?)=([ ]*?)"([^]*?)"';
+       // $str='hsw';
+		echo  \lib\html\dom\Dom_s::haveSTR($text,$str);
+	}
     static public function toStr(){
        $view=file_get_contents('test/view/testform.html',true); 
        $oldT=['text2'=>[
@@ -42,48 +50,102 @@ class T_szotar{
        $arr=\lib\html\dom\Dom_s_szotar::toArray($view,['hu','en','de'],$oldT);
        echo \lib\html\dom\Dom_s_szotar::toStr($arr);
     }
-    static public function getparam(){
-        $elem='< asdfhswfh id="fghfd"  val="25" gg="">';
-      $g=\lib\html\dom\Dom_s_jqery::getParam($elem, 'fdggdf')['res'];
-   if(!\lib\html\dom\Dom_s_jqery::getParam($elem, 'sdfsdf')['bool']) {echo 'fales';}else{
-       echo $g; }
+    static public function toArray(){
+    	$view=file_get_contents('test/view/testform.html',true);
+    	$oldT=['text2'=>[
+    			'hu'=>'fffff',
+    			'en'=>'',
+    			'de'=>'gggggggggg',
+    	],'text1'=>[
+    			'hu'=>'text1 placeholder ujjjj',
+    			'en'=>'hhhhhhhh',
+    			'de'=>'',
+    	]];
+    	$arr=\lib\html\dom\Dom_s_szotar::toArray($view,['hu','en','de'],$oldT);
+    	//echo \lib\html\dom\Dom_s_szotar::toStr($arr);
+    	print_r($arr);
+    }
+     
+    
+    static public function getElemT_fromParamT(){
+       $html=file_get_contents('test/view/testform.html',true); 
+      print_r(\lib\html\dom\Dom_s::getElemT_fromParamT($html, ['lt','ghjlt','ltdat']));
+
+    
+    }static public function getParamVal(){
+    	$elem='< asdfhswfh id="fghfd"  val="25" gg="gfdf">';
+    	$g=\lib\html\dom\Dom_s::getParamVal($elem, 'gg');
+    
+    	echo $g;
     
     }
+    
+  
     static public function setParam(){
-        $elem='< asdfhswfh id="fghfd"  val="25">';
-        print_r( \lib\html\dom\Dom_s_jqery::setParam($elem, 'id','12',true));
+        $elem='< asdfhswfh id="fghfd"  val="25"/>';
+        print_r( \lib\html\dom\Dom_s::setParam($elem, 'gg','juhj',true));
     
     }
     static public function setParamFromT(){
         $elem='< asdfhswfh id="fghfd"  val="25">';
         $dataT=['fghfd'=>'ujvalue'];
-        print_r( \lib\html\dom\Dom_s_jqery::setParamFromT($elem, 'gg','id',$dataT,true));
+        print_r( \lib\html\dom\Dom_s::setParamFromT($elem, 'gg','id',$dataT,true));
     
     }
     static public function setParamFromDataT(){
         $elem='< asdfhswfh dat="fghfd"  >< ltdat="fghfd" >';
         $dataT=['fghfd'=>'ujvalue'];
-        print_r( \lib\html\dom\Dom_s_jqery::setParamFromDataT($elem,$dataT));
+        print_r( \lib\html\dom\Dom_s::setParamFromDataT($elem,$dataT));
     
     }
     static public function setParamFromLT(){
         $elem='< ltdat="fghfd">';
         $LT=['fghfd'=>'ujvalue','11'=>'11value'];
-        print_r( \lib\html\dom\Dom_s_jqery::setParamFromLT($elem,$LT));
+        print_r( \lib\html\dom\Dom_s::setParamFromLT($elem,$LT));
     
     }
     
     static public function getElemT(){
         $html=file_get_contents('test/view/testform.html',true); 
-        print_r( \lib\html\dom\Dom_s_jqery::getElemT($html, 'lt'));
+        print_r( \lib\html\dom\Dom_s::getElemT($html, 'lt|ltdat' ));
     
     }
+    static public function getinner(){
+    	$html=file_get_contents('test/view/testform.html',true);
+    	
+    	print_r( \lib\html\dom\Dom_s::getInner($html, '<div lt="">' ));
     
+    }
+    static public function getLTSelectedT(){
+    	$html=file_get_contents('test/view/testform.html',true);
+    	 
+    	print_r( \lib\html\dom\Dom_s::getLTSelectedT($html ));
+    
+    }
+    static public function changeLT(){
+    	
+    	$LT=['text1'=>'text1 ujvalue',
+    	'input1'=>'input1 ujvalue',
+    	'label'=>'label ujvalue',	
+    	'input1'=>'input1 ujvalue',
+    	'hhjh'=>'hhjh ujvalue',
+    	'submit'=>'submit ujvalue'		
+    	];
+    	$view=file_get_contents('test/view/testform.html',true);
+    	echo \lib\html\dom\Dom_s::ChangeLT($view, $LT);
+    
+    } 
 }	
 echo "Test_Dom:------------- ";
 
+T_szotar::changeLT();
+//T_szotar::toArray();
+//T_szotar::getLTSelectedT();
+//T_szotar::getInner();
+//T_szotar::getElemT_fromParamT();
+//T_szotar::haveSTR();
 //T_szotar::tostr();
-T_szotar::getparam();
+//T_szotar::getparamVal();
 //T_szotar::getElemT();
 //T_szotar::setParam();
 //T_szotar::setParamFromT();
