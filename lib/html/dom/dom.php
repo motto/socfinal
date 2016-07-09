@@ -5,7 +5,7 @@ namespace lib\html\dom;
 defined( '_MOTTO' ) or die( 'Restricted access' );
 
 class Dom_s{
- //html manipuláló************************************************* 
+ //html manipuláló****************************************
  /**
 A getElemT első elemével tér vissza (string)
   */   
@@ -34,6 +34,11 @@ static   public function getLTSelectedT($html){
     else if(in_array(self::getParamVal($elem,'type'),['button','submit']))
     {$type='button'; $value=self::getParamVal($elem,'value');   }
    	else if(self::haveSTR($elem,'<textarea')){$type='placeholder';}
+   	else if(self::haveSTR($elem,'<!--')){
+   		$type='notes';
+   		$value='';
+   	}
+   	
     else{$type='inner';
     $value=self::getInner($html,$elem);
     } 
@@ -53,6 +58,14 @@ static   public function getDataSelectedT($html){
 			{$type='checked';}
 		
 		}
+		else if(self::haveSTR($elem,'<!--')){
+			$type='notes';
+			$value='';
+		}
+		else if(self::getParamBool($elem,'href')){
+			$type='href';
+			$value=self::getParamVal($elem,'href');
+		}
 		else{$type='inner';
 		$value=self::getInner($html,$elem);
 		}
@@ -71,6 +84,15 @@ nem használt csak egy sort vált ki
 static   public function ChangeElem($view,$elem,$ujelem){
 	return $view= str_replace($elem,$ujelem, $view); ;
 }
+
+/**
+ A $view html string lt vagy ltdat parméterrel rendelkező elemeit kiceséli a $LT alapján.
+ az elem lt vagy ltdat éréke a $LT kulcsa
+ az elemeket a getLTSelectedT()-el válogtaja ki
+ az input tipusú elemek placeholder értékét változtatja meg,(inputmezo,textarea..)
+ az inner tipusú elemek innerhtmljét cseréli ki.(<span>, <div> <a>.. )
+a button tipusú elemek valaue paraméterét cseréli ki
+ */
 static   public function ChangeLT($view,$LT){
 $elemT=self::getLTSelectedT($view);
 foreach ($elemT as $elem) 
@@ -98,28 +120,57 @@ foreach ($elemT as $elem)
 return  $view;
 	
 }
-static   public function ChangeLT($view,$dataT){
+/**
+A $view html string dat vagy ltdat parméterrel rendelkező elemeit kiceséli a $dataT alapján.
+ az elem dat vagy ltdat éréke a $dataT kulcsa
+ az elemeket a getDataSelectedT()-el válogtaja ki
+ az input tipusú elemek value értékét változtatja meg,(inputmezo,)
+ a chcked tipusúak checked paraméterét változtaja checkedre (radio, checkbox)
+ 	Ezek értékét a dataT-.ben mglehet adni stringként  |-vel tagolt stringként vagy tömbként
+ 	ha a $dataTchar='' nem használ tömböt a checked elemnél.
+ az inner tipusú elemek innerhtmljét cseréli ki.(textarea,<span>, <div> <a>.. )
+ */
+static   public function ChangeDataT($view,$dataT,$dataTchar='|'){
 	$elemT=self::getDataSelectedT($view);
 	foreach ($elemT as $elem)
 	{
-
-		if(isset($LT[$elem['nev']]))
+		
+		if(isset($dataT[$elem['nev']]))
 		{
+			$data=$dataT[$elem['nev']];
 			switch ($elem['type']) {
-				case 'input':
-					 
-					$ujelem=self::setParam($elem['elem'], 'value',$dataT[$elem['nev']]);
-					$view= str_replace($elem['elem'],$ujelem, $view);
+				case 'notes':
+	
+					$view= str_replace('<!-- lt="'.$elem['nev'].'"-->',$data, $view);
 					break;
-				case 'checked':
-					 
-					$ujelem=self::setParam($elem['elem'], 'placeholder',$dataT[$elem['nev']]);
-		 		$view=str_replace($elem['elem'],$ujelem, $view);
-		 		break;
+			
 				case 'inner':
-					$view=self::changeInner($view,$elem['elem'],$dataT[$elem['nev']]);
+					
+					$view=self::changeInner($view,$elem['elem'],$data);
 					break;
+				case 'href':
+					
+				$ujelem=self::setParam($elem['elem'], 'href',$data);
+				$view= str_replace($elem['elem'],$ujelem, $view);
+				break;	
+				case 'checked':
+					
+				if($dataTchar!=''){
+			
+					if(!is_array($data)){$data=explode($dataTchar,$data);}
+					if(in_array($elem['val'], $data))
+					{$ujelem=self::setParam($elem['elem'], 'checked','checked');
+					$view=str_replace($elem['elem'],$ujelem, $view);}
+						
+				}
+				else{
+					if($elem['val']==$data)
+					{$ujelem=self::setParam($elem['elem'], 'checked','checked');
+					$view=str_replace($elem['elem'],$ujelem, $view);}
+				}
+				break;
 			}
+
 		}
 	}
 	return  $view;
@@ -135,10 +186,10 @@ static   public function haveSTR($text,$str) {
 	if(empty($match[0])){ $bool= false;}
 	return $bool;
 }
-static   public function getInner($html,$elem) {
+static   public function getInner($html,$elem,$zarotag='<\/') {
 	$match=[];
-	preg_match('/'.$elem.'([^`]*?)<\//', $html, $match);
-	if(empty($match[0])){ $bool= false;}
+	preg_match('/'.$elem.'([^`]*?)'.$zarotag.'/', $html, $match);
+	//if(empty($match[0])){ $bool= false;}
 	return $match[1];
 }
 

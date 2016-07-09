@@ -122,25 +122,46 @@ class T_szotar{
     	print_r( \lib\html\dom\Dom_s::getLTSelectedT($html ));
     
     }
+    static public function getDataSelectedT(){
+    	$html=file_get_contents('test/view/testform.html',true);
+    
+    	print_r( \lib\html\dom\Dom_s::getdataSelectedT($html ));
+    
+    }
     static public function changeLT(){
     	
     	$LT=['text1'=>'text1 ujvalue',
     	'input1'=>'input1 ujvalue',
     	'label'=>'label ujvalue',	
     	'input1'=>'input1 ujvalue',
-    	'hhjh'=>'hhjh ujvalue',
+    	'hhjh'=>'hhjh ujvalue','link'=>'linkfelirat',
     	'submit'=>'submit ujvalue'		
     	];
     	$view=file_get_contents('test/view/testform.html',true);
     	echo \lib\html\dom\Dom_s::ChangeLT($view, $LT);
     
     } 
+    static public function changeDataT(){
+    	 
+    	$LT=['text1'=>'text1 ujvalue',
+    			'input1'=>'input1 ujvalue',
+    			'label'=>'label ujvalue',
+    			'input1'=>'input1 ujvalue',
+    			'hhjh'=>'hhjh ujvalue','link'=>'linkhref',
+    			'cbox'=>'checkbox1','age'=>'radio2|radio2' //lehet tömb is!
+    	];
+    	$view=file_get_contents('test/view/testform.html',true);
+    	echo \lib\html\dom\Dom_s::ChangeDataT($view, $LT,'|');
+    
+    }
 }	
 echo "Test_Dom:------------- ";
 
 T_szotar::changeLT();
+//T_szotar::changeDataT();
 //T_szotar::toArray();
 //T_szotar::getLTSelectedT();
+//T_szotar::getDataSelectedT();
 //T_szotar::getInner();
 //T_szotar::getElemT_fromParamT();
 //T_szotar::haveSTR();
