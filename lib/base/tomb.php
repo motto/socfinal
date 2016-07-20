@@ -19,7 +19,16 @@ usort($assocT, "sortByName");
 		return ($a < $b) ? -1 : 1;
 	}
 	
+static 	public function langTextToT($key,$text,$LT=[],$changeT=[]){
+	    $err=\lib\str\STR::Change($text,$changeT,$LT);
+	    if($err!='')
+	    {
+	        $err0=$LT[$key] ?? '';
+	        $LT[$key]=$err0.$err.'</br>';
 	
+	    }
+	return $LT;
+	}	
 	
     /**
      * ['id'=>'user1','nev'=>'otto']

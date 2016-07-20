@@ -9,14 +9,14 @@ class DBA
     static public function parancs($sql)
     {
         if (\CONF::$sql_log != 'no') {
-            \GOB::$log['sql'][] = $sql;
+            \GOB::$logT['sql'][] = $sql;
         }
         $result = true;
         try {
             $stmt = \GOB::$db->prepare($sql);
             $stmt->execute();
         } catch (PDOException $e) {
-            \GOB::$hiba['pdo'][] = $e->getMessage();
+            \GOB::$echoT['hiba']['pdo'][]= $e->getMessage();
             $result = false;
         }
 
@@ -26,7 +26,7 @@ class DBA
   a beszúrt id-el tér vissza a hibát \GOB::$hiba['pdo'][]-ba írja
     */
     static public function beszur($sql)
-    {if(\CONF::$sql_log!='no'){\GOB::$log['sql'][]=$sql;}
+    {if(\CONF::$sql_log!='no'){\GOB::$logT['sql'][]=$sql;}
         $result = 0;
         try {
             $stmt = \GOB::$db->prepare($sql);
@@ -35,7 +35,7 @@ class DBA
             $result=\GOB::$db->lastInsertId();
 
         } catch (PDOException $e) {
-            \GOB::$hiba['pdo'][] = $e->getMessage();
+           \GOB::$echoT['hiba']['pdo'][] = $e->getMessage();
             //echo $e->getMessage();
         }
         return $result;
@@ -97,7 +97,7 @@ figyelem, nem ellenőriz!! A dataT végijárva ($mezonev=>$value) beszúr és a 
 ha $test=true akkor nem ír be csak az sql-el tér vissza 
  */
     static public function beszur_tombbol($tabla,$dataT,$test=false)
-    {
+    {echo '--------------';
     	$value_string='';$mezo_string='';
     	$result=0;
     
@@ -113,6 +113,7 @@ ha $test=true akkor nem ír be csak az sql-el tér vissza
     		$value_string2=rtrim($value_string,',');
     		$sql="INSERT INTO $tabla ($mezo_string2) VALUES ($value_string2)";
     		//visszatérési érték----------------------------
+//echo 'ggggggggg '. $sql;
     		if($test){$result=$sql;}
     		else{$result=DBA::beszur($sql);}
     	}

@@ -26,7 +26,7 @@ evallal futtatható osztály definicióval tér vissza (string)
 a traiteket ponosvesszővel kell elválasztani, a végére nem kell! lehet tömb is.
 Ha $os sztályt adunk meg az osztály definició annak a gyermeke lesz.
  */
-	static public function str($classnev,$trt,$os=''){
+static public function str($classnev,$trt,$os=''){
 		$ext='';
 		if($os!=''){$ext=' extends '.$os;}
 		$res= 'class '.$classnev.$ext.'{ ';
@@ -84,7 +84,7 @@ ami alapesetben a  __toString() -et adja vissza (ha string res-t akarunk elég c
  */
 class OB_base 
 {
-public $ADT=[];
+
 	
 /**
 a $parT-vel feltölti a this változókat
@@ -100,13 +100,36 @@ a $parT-vel feltölti a this változókat
 
 	        foreach ($parT as $name => $value)
 	        {	
-	            $this->ADT['$name']=$value;
-	        	
+	            if(isset( $this->$name)){ $this->$name=$value;}
+	
 	        }
     	}
     
 }
+class OB_base_ADT
+{
+    public $ADT=[];
 
+    /**
+     a $parT-vel feltölti a $ADT tömböt
+     */
+    public function __construct($parT=[])
+    {
+        $this->initMo($parT);
+
+    }
+     
+    public function initMo($parT = [])
+    {
+
+        foreach ($parT as $name => $value)
+        {
+            $this->ADT['$name']=$value;
+
+        }
+    }
+
+}
 
 
 

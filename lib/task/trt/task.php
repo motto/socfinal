@@ -10,31 +10,38 @@ trait Task {
         $task=$this->ADT['task'];
        // echo $task;
         if(isset($this->ADT['TSK'][$task]['trt']))
-			{$trt=$this->ADT['TSK'][$task]['trt'];}
-			
+		{$trt=$this->ADT['TSK'][$task]['trt'];}
+		else{$trt=[];}
+		
 			$modnev=$this->classNev($task);
 			//echo \lib\base\Ob_Trt::str($modnev,$trt);
 			if(!class_exists($modnev, false))
-			{eval(\lib\base\Ob_Trt::str($modnev,$trt));}
+			{eval(\lib\base\Ob_TrtS::str($modnev,$trt));}
 			
 			eval('$'.$modnev.'=new '.$modnev.'();');
 			
 			$$modnev->ADT=$this->ADT;
 			
+		    if(isset($this->ADT['TSK'][$task]['before']))
+		    {$before_func= $this->ADT['TSK'][$task]['before'] ; $$modnev->$before_func();   }
+		    
 			$func=$this->func($modnev);
 			//echo '$func'.$func;
 			if($func=='')
 			{$task='';}
 			else{
 				//eval('$ADT=$'.$modnev.'->'.$func.'();');
-				$$modnev->$func();
-				
+				$$modnev->$func();				
 			}
+			
+			if(isset($this->ADT['TSK'][$task]['after']))
+			{$after_func= $this->ADT['TSK'][$task]['after'] ; $$modnev->$after_func();   }	
+			
     $this->ADT= $$modnev->ADT;  
     }
 	public function func($clasnev)
 	{
-		$func='';
+		$func='Res';
 		$task=$this->ADT['task'];
 		//futtatandó funkció:ADT-ben deklarált, vagy a task név vagy TSK ban deklarált
 		if(isset($this->ADT['resfunc']) && method_exists($clasnev,$this->ADT['resfunc'])){$func=$this->ADT['resfunc'];}
@@ -52,16 +59,12 @@ trait Task {
 	{$task=$this->ADT['TSK'][$task]['next'];
 	}else{$task='';}
 
-	if(isset($this->ADT['next'])){
-		$task=$this->ADT['next'];
-	}
-	//print_r($this->ADT);
 	$this->ADT['task']=$task;
 	}
 	public function classNev($task)
 	{
 		
-		if(isset($this->ADT['modnev']) && $this->ADT['modnev']!=''){$modnev=$this->ADT['modnev'].$task;}
+		if(isset($this->ADT['obNev']) && $this->ADT['obNev']!=''){$modnev=$this->ADT['obNev'].$task;}
 		else{$modnev='app'.$task;}//ha applikációban futtatjuk nem tud több példány létezni
 		return $modnev;
 	}
@@ -77,7 +80,7 @@ trait Task {
 	 ezzel hívja meg újra saját magát de a task az  ADT::$next lesz
 	 ha nincs akkor TSK::$next ha ez sincs akkor nem hívja meg magát.
 	 */
-	public function task()
+	public function Task()
 	{
 		
 		while ($this->ADT['task']!='')
@@ -85,7 +88,7 @@ trait Task {
 ///echo $task;    
 			$this->task_futtat();
 			$this->next();
-			$this->ADT['next']='';
+			
 		}
 
 	}
@@ -93,13 +96,20 @@ trait Task {
 
 }
 
+/**
+ADT kompatibilis ha van POST[$tasknev] nevű adat akkor az lesz a task
+ ha nics akkor  GET[$tasknev], ha az sincs akkor a $task
+ */
+trait Task_PG_GetTask{
 
-trait Task_PostGet{
-
-	static public function getTask($tasknev,$alaptask='alap'){
-		$task=$alaptask;
+ public function GetTask($tasknev='task',$task='alap'){
+	    if ($task == 'alap') { $task = $this->ADT['task'] ?? 'alap';}
+	    if ($tasknev == 'task') { $tasknev = $this->ADT['tasknev'] ?? 'task';}
+	    
 		if(isset($_GET[$tasknev])){$task=$_GET[$tasknev];}
 		if(isset($_POST[$tasknev])){$task=$_POST[$tasknev];}
+		
+		if(isset($this->ADT)){$this->ADT['task']=$task;}
 		return  $task;
 	}
 

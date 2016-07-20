@@ -26,7 +26,7 @@ ha üreset adunk meg csak az üreseket. tesztelve
     }
 
 static   public function getLTSelectedT($html){
-  $elemT=  self::getElemT($html,'lt|ltdat');
+  $elemT=  self::getElemT($html,'lt|ltdat');$res=[];
   foreach ($elemT as $elem) {
   	$value=self::getParamVal($elem,'placeholder');
     $nev=self::getParamVal($elem,'lt|ltdat');
@@ -36,9 +36,8 @@ static   public function getLTSelectedT($html){
    	else if(self::haveSTR($elem,'<textarea')){$type='placeholder';}
    	else if(self::haveSTR($elem,'<!--')){
    		$type='notes';
-   		$value='';
+   		$value=self::getInner($html,$elem,$zarotag='<!');
    	}
-   	
     else{$type='inner';
     $value=self::getInner($html,$elem);
     } 
@@ -48,7 +47,7 @@ static   public function getLTSelectedT($html){
 }
 
 static   public function getDataSelectedT($html){
-	$elemT=  self::getElemT($html,'dat|ltdat');
+	$elemT=  self::getElemT($html,'dat|ltdat');$res=[];
 	foreach ($elemT as $elem) {
 		$value=self::getParamVal($elem,'value');
 		$nev=self::getParamVal($elem,'dat|ltdat');
@@ -66,17 +65,22 @@ static   public function getDataSelectedT($html){
 			$type='href';
 			$value=self::getParamVal($elem,'href');
 		}
+		else if(self::getParamVal($elem,'type')=='submit'){
+		    $type='submit';
+		    $value='';$nev='task';
+		}
 		else{$type='inner';
 		$value=self::getInner($html,$elem);
 		}
 		$res[]=['type'=>$type,'val'=>$value,'elem'=>$elem,'nev'=>$nev];
 	
 	}
+	//print_r($res);
 	return $res;		
 }
-static   public function changeInner($view,$elem,$data){
-	$ujmezo=$elem.$data.'</';
-	return preg_replace("/".$elem."([^`]*?)<\//",$ujmezo, $view);
+static   public function changeInner($view,$elem,$data,$zarotag='<'){
+	$ujmezo=$elem.$data.$zarotag;
+	return preg_replace("/".$elem."([^`]*?)".$zarotag."/",$ujmezo, $view);
 }
 /**
 nem használt csak egy sort vált ki
@@ -93,7 +97,7 @@ static   public function ChangeElem($view,$elem,$ujelem){
  az inner tipusú elemek innerhtmljét cseréli ki.(<span>, <div> <a>.. )
 a button tipusú elemek valaue paraméterét cseréli ki
  */
-static   public function ChangeLT($view,$LT){
+static   public function ChangeLT($view,$LT=[]){
 $elemT=self::getLTSelectedT($view);
 foreach ($elemT as $elem) 
 {
@@ -101,10 +105,13 @@ foreach ($elemT as $elem)
 	if(isset($LT[$elem['nev']]))
 	{
 		switch ($elem['type']) {
+		    case 'notes':
+		        $view=self::changeInner($view,$elem['elem'],$LT[$elem['nev']],'<!');
+		        break;
 		    case 'button':
-		    	
-		     	$ujelem=self::setParam($elem['elem'], 'value',$LT[$elem['nev']]);
-		    	$view= str_replace($elem['elem'],$ujelem, $view);
+		    	$view=self::changeInner($view,$elem['elem'],$LT[$elem['nev']]);
+		     	//$ujelem=self::setParam($elem['elem'], 'value',$LT[$elem['nev']]);
+		    	//$view= str_replace($elem['elem'],$ujelem, $view);
 		        break;
 		    case 'placeholder':
 		    	
@@ -130,7 +137,7 @@ A $view html string dat vagy ltdat parméterrel rendelkező elemeit kiceséli a 
  	ha a $dataTchar='' nem használ tömböt a checked elemnél.
  az inner tipusú elemek innerhtmljét cseréli ki.(textarea,<span>, <div> <a>.. )
  */
-static   public function ChangeDataT($view,$dataT,$dataTchar='|'){
+static   public function ChangeData($view,$dataT,$dataTchar='|'){
 	$elemT=self::getDataSelectedT($view);
 	foreach ($elemT as $elem)
 	{
@@ -139,9 +146,15 @@ static   public function ChangeDataT($view,$dataT,$dataTchar='|'){
 		{
 			$data=$dataT[$elem['nev']];
 			switch ($elem['type']) {
+			    case 'submit':
+			        
+			        $ujelem=self::setParam($elem['elem'], 'name',$data);
+			        $view= str_replace($elem['elem'],$ujelem, $view);
+			      break;
+			        	 
 				case 'notes':
 	
-					$view= str_replace('<!-- lt="'.$elem['nev'].'"-->',$data, $view);
+					$view= str_replace('<!-- dat="'.$elem['nev'].'" -->',$data, $view);
 					break;
 			
 				case 'inner':

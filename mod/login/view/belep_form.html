@@ -1,48 +1,18 @@
-<h4>Belépés</h4>
-<!--<h5>hiba</h5>-->
+<h4 lt="belep">Belépés</h4>
+<div lt="err" ></div>
+<div lt="alert" ></div>
+<div lt="info" ></div>
 
 	<form   method="post" >
+	<div class="form-group">			
+					<input type="text" class="form-control"  placeholder="Username" name="username"  >
 				
-					<input type="text" class="form-control" required="required" placeholder="Username" name="username"  >
-				</div>
-
-				<div class="form-group">
 					<input type="password" class="form-control"  placeholder="Jelszó" name="password" >
-				</div>
-
-				<div class="form-group">
 	
-					<button type="submit" name="ltask" value="belep" class="btn btn-primary"><!--l-belepes-l-->Belépés<!----> </button>
-		 		<button type="submit" name="ltask" value="reg" class="btn btn-primary" ><!--l-reg-l-->Regisztrálás<!----></button>
-				</div>
+		<button type="submit" name="" ltdat="belep" value="belep" class="btn btn-primary">Belépés</button>
+	<button type="submit" name="" ltdat="reg" value="regform" class="btn btn-primary" >Regisztrálás</button>
+	</div>			
 <!-- <a="">Elfelejtett jelszó</a>-->
 			
 	</form>
 
-
-<!-- 
-<section class="container">
-	<h4><!--##login--><!-- </h4>
-	<!--<h5>hiba</h5>-->
-<!-- 	<form   method="post" >
-		<div class="row">
-			<div class="col-sm-5">
-				<div class="form-group">
-					<input type="text" class="form-control" required="required" placeholder="<!--##username--><!-- " name="username" data="username" >
-				</div>
-
-				<div class="form-group">
-					<input type="password" class="form-control" name="password" placeholder="<!--##passwd--><!-- " data="password" >
-				</div>
-
-				<div class="form-group">
-					<input type="hidden" name="mod" value="login" />
-					<button type="submit" name="ltask" value="belep" class="btn btn-primary btn-lg"><!--##login--><!-- </button>
-					<button type="button" name="ltask" value="reg" class="btn btn-primary btn-lg" onclick="window.location='index.php?app=base&mod=login&ltask=reg'" ><!--##reg--><!-- </button>
-				</div>
-
-			</div>
-
-		</div>
-	</form>
-</section><!--/.col-sm-8-->

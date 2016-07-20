@@ -110,7 +110,7 @@ ADT::$task='alap';
 ADT::$modnev='log2';
 $ob2=new test_task();
 $ob2->task();
-//echo $ob2->ADT['view'];
+echo $ob2->ADT['view'];
 if($ob2->ADT['view']=='alaptrt2trt4'){
 	echo "  ok,";
 }else{echo ' !!!,';

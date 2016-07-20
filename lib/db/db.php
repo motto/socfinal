@@ -16,13 +16,13 @@ class DB
                 $result[] = $row;
             }
         } catch (PDOException $e) {
-            \GOB::$hiba['pdo'][] = $e->getMessage();
+            \GOB::$echoT['hiba']['pdo'][] = $e->getMessage();
         }
         return $result;
     }
    static public function assoc_sor($sql)
     {
-        if(\CONF::$sql_log='full'){\GOB::$log['sql'][]=$sql;}
+        if(\CONF::$sql_log='full'){\GOB::$logT['sql'][]=$sql;}
         $result = array();
         try {
             $stmt = \GOB::$db->prepare($sql);
@@ -35,7 +35,7 @@ class DB
             }
 
         } catch (PDOException $e) {
-            \GOB::$hiba['pdo'][] = $e->getMessage();
+            \GOB::$echoT['hiba']['pdo'][] = $e->getMessage();
         }
         return $result;
     }
@@ -54,7 +54,7 @@ class DB
             }
 
         } catch (PDOException $e) {
-            \GOB::$hiba['pdo'][] = $e->getMessage();
+            \GOB::$echoT['hiba']['pdo'][] = $e->getMessage();
         }
         return $result;
     }

@@ -86,7 +86,7 @@ PL ['name'=>['motto','Admin'],'id'=>['11']] (a felhasználók a mottto és az ad
         {
             if(isset($mezotomb['cim'])){$mezonev=$mezotomb['cim'];}
            $this->mezo($mezonev);
-            if(!isset($mezotomb['noorder'])){ $html.=$this->rendez_sor}
+            if(!isset($mezotomb['noorder'])){ $html.=$this->rendez_sor;}
         }
         $html.="</tr>";
         return $html;

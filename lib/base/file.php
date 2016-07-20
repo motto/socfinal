@@ -1,35 +1,29 @@
 <?php
 namespace lib\base;
-trait File_ToFile{
-public    function ToFile($content='',$path='',$utf8=true ){
-  //  if ($content=='') {$content=$this->ADT['content'] ?? '';}
-  //  if ($path=='') {$path=$this->ADT['path'] ?? '';$path=$this->path ?? '';}
-    $fp = fopen($path, 'w');
-    //fputs($fp, $bom =( chr(0xEF) . chr(0xBB) . chr(0xBF) ));
-    if($utf8) {fwrite($fp, "\xEF\xBB\xBF".$content);}
-    else{fwrite($fp, $content);}
-    fclose($fp);
 
-}
-}
-trait File_ReadCSV{
-    public    function ReadCSV($filepath,$sep=','){
-		$fileT=[];
-		$file = fopen($filepath, 'r');
-		while (($line = fgetcsv($file)) !== FALSE) {
-			$fileT[]=$line;
-		}
-		fclose($file);
-		return $fileT;
-	}
-}
 
 class File{
-	
+    
+ static    public    function ReadCSV($filepath,$sep=','){
+        $fileT=[];
+        $file = fopen($filepath, 'r');
+        while (($line = fgetcsv($file)) !== FALSE) {
+            $fileT[]=$line;
+        }
+        fclose($file);
+        return $fileT;
+    }    
+ static   public    function toFile($content,$path,$utf8=true ){
+        $fp = fopen($path, 'w');
+        if($utf8) {fwrite($fp, "\xEF\xBB\xBF".$content);}
+        else{fwrite($fp, $content);}
+        fclose($fp);
+    
+    }	
 /**
 ha a mezőtomb üres az elsősorból veszi a mezőneveket
  */
-	static public function  readCSV_assocT($filepath,$sep=',',$mezoT=[]){
+static public function  readCSV_assocT($filepath,$sep=',',$mezoT=[]){
 		$file = fopen($filepath, 'r');$fileT=[];$T=[];
 		if(empty($mezoT)){$mezoT=fgetcsv($file);}	
 		//print_r($mezoT);

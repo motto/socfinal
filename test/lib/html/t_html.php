@@ -2,24 +2,26 @@
 namespace test\lib\html;
 
 
+use lib\html\Fejlec_s;
+
 class T_html{
-//use Dom_data_Find;
-use Dom_ChangeFull;
+
 	static public function fejlec(){
 	
 		echo "\n T_html::fejlec: ";
-	\GOB::$headT['og']=[['image','gg'],['image','gg1'],['title','tit']];
-	\GOB::$bodyendT['js']['b1']='js1';
-	\GOB::$bodyendT['jsfile']['gg']='js3.js';
-	\GOB::$bodyendT['jsfile']['gg']='js2.js';
-	\GOB::$bodyT['css'][]='css1 ghej';
-	\GOB::$bodyT['cssfile']=['css1'=>'csshfg.css','css1'=>'css1.css','css2.css'];
-	\GOB::$bodyT['cssfile']['css1']='css1.css';
-		$res1='<meta property="og:image" content="gg" /><meta property="og:image" content="gg1" /><meta property="og:title" content="tit" />';
-		if(OB::res('lib\html\Fejlec',['cpT'=>\GOB::$headT])==$res1){echo 'OK,';}
+	\GOB::$headT['head']['og']=[['image','gg'],['image','gg1'],['title','tit']];
+	\GOB::$headT['bodyendT']['js']['b1']='js1';
+	\GOB::$headT['bodyendT']['jsfile']['gg']='js3.js';
+	\GOB::$headT['bodyendT']['jsfile']['gg']='js2.js';
+	\GOB::$headT['bodyT']['css'][]='css1 ghej';
+	\GOB::$headT['bodyT']['cssfile']=['css1'=>'csshfg.css','css1'=>'css1.css','css2.css'];
+	\GOB::$headT['bodyT']['cssfile']['css1']='css1.css';
+		$res1='<script>js1</script><script src="js2.js"></script>';
+		if(Fejlec_s::StrFromArr(\GOB::$headT['bodyendT'])==$res1){echo 'OK,';}
 		else{echo '!!!,';
 		\GOBT::$resT['T_HTML']['fejlec']='1';
-		}	
+		}
+		/*
 			$res2='<script>js1</script><script src="js2.js"></script>';
 		if(OB::res('lib\html\Fejlec',['cpT'=>\GOB::$bodyendT])==$res2){echo 'OK,';}
 		else{echo '!!!,';
@@ -54,15 +56,14 @@ use Dom_ChangeFull;
 		if(OB::res('lib\html\Fejlec',['cpT'=>$hedT])==$res4){echo 'OK,';}
 		else{echo '!!!,';
 		\GOBT::$resT['T_HTMLK']['fejlec']='6';
-		}
+		}*/
 	}
 	
 }
 
 
 echo "TestHTML:------------- ";
-
-echo html::get_Tmpl('test/proba.html');
+echo T_html::fejlec();
 //echo html::get_modTmpl('test/probamod.html','proba');
 
 

@@ -1,80 +1,76 @@
 <?php
 namespace mod\login;
 
-use lib\base\Ob_Trt;
-use lib\base\Task;
-
-
 defined( '_MOTTO' ) or die( 'Restricted access' );
 include_once 'mod/login/par.php';
-
-/*
-//azért kell associativ tömb hogy felül  írható legyen!
- \CONF:: $baseTRT=['temp'=>'',
-					'task'=>'trt\task\Task_PostGet'
-					];
-$loginTRT=\CONF:: $baseTRT;//hogy változtatható legyen
-*/
-
-
+include_once 'mod/login/lt.php';
 
 /**
 ha sima use-val használjuk a traiteket nem tudunk beépíteni változókat pl:CONF::$LangMode
+azért kell associativ tömb hogy felül  írható legyen!
  */
-abstract class loginbase{}; //csak azét kell hogy ne legyen figyelmeztetés
+//$loginTRT['SetLT']='\lib\lang\trt\\'.\CONF::$LangMode.'\\'.\CONF::$LangForras.'\Set_SetLT';
+$loginTRT['SetLT']='\lib\lang\trt\single\tomb\Set_SetLT';
+$loginTRT['GetTask']='\lib\task\trt\Task_PG_GetTask';
+$loginTRT['Task']='\lib\task\trt\Task';
+$loginTRT['ChangeLT']='\lib\html\dom\trt\Dom_ChangeLT';
+$loginTRT['ChangeData']='\lib\html\dom\trt\Dom_ChangeData';
 
-$loginTRT['lang']='lib\lang\trt\\'.\CONF::$LangMode.'\\'.\CONF::$LangForras.'\Get_LT';
-$loginTRT['getTask']='trt\task\Task_PostGet';
-$loginTRT['feltolt']='trt\task\Task_PostGet';
+eval(\lib\base\Ob_TrtS::str('loginbase',$loginTRT));
 
-eval(Ob_Trt::str('loginbase', $loginTRT))	; //loginbase osztály generálása, 	
-
-class Login extends loginbase
+/*
+class loginbase {
+    use \lib\lang\trt\single\tomb\Set_SetLT;
+    use \lib\task\trt\Task_PG_GetTask;
+    use \lib\html\dom\trt\Dom_ChangeLT;
+    use \lib\html\dom\trt\Dom_ChangeData;
+}
+*/
+class Login extends \loginbase
 { 
-	//protected $ADT=[]; //az Ob_Trt::str -el előállított osztályokban benne van!
+	public $ADT=[]; //az Ob_Trt::str -el előállított osztályokban benne van!
 	
 	public function __construct($parT = []){
 		$this->ADT = get_class_vars('mod\login\ADT');
 		$this->ADT['TSK']=get_class_vars('mod\login\TSK');
 		$this->setADT($parT); 
+		if($this->ADT['captcha']){
+		  $this->ADT['TSK']['regform']['trt'][]='mod\login\trt\Captcha';
+		  $this->ADT['TSK']['regform']['after']='Captcha';
+		  
+		  $this->ADT['TSK']['regment']['trt'][]='mod\login\trt\Captcha_CodeEll';
+		  $this->ADT['TSK']['regment']['ell']['captcha']['CodeEll']='"captcha_err"';
+		}
 	}
 	public function setADT($parT = []){
 		foreach ($parT as $name => $value)
 		{$this->ADT[$name]=$value;}
 	}
-	
-	public function view($filename)
-	{
-		if(is_file('tmpl/'.\GOB::$tmpl.'/mod/login/'.$filename)){
-			$res='tmpl/'.\GOB::$tmpl.'/mod/login/'.$filename;
-		}
-		else if(is_file('/mod/login/view/'.$filename)){
-			$res='/mod/login/view/'.$filename;
-		}
-		else{$res=$filename;}
-		return $res;
-		
-	}
+
     public function Login($parT=[])
-    {	//$this->ADT feltöltése
-    	$this->setADT($parT);
-    	
+    {
+        $this->ADT['LT']=\mod\login\LT::$hu;
+      // $this->ADT['LT']['err']='fbv dfsgds ';
     	//nyelvi tömb feltöltése parameter: mod könytár neve (modulnev nem a modul object neve) 	
-    	$this->getModLT('login');//trt: lang
+       // $this->SetLT('login');//trt: lang
     	
     	//futtatamdó task előállítása
-        $this->getTask(ADT::$modnev);//trt: getTask
-        
+       $this->GetTask($this->ADT['obNev']);//trt: getTask
+       //echo'----------kkkkkkk---'. $this->ADT['task'];
         //Post elemek ellenőrzése
        // $this->ell(); //trt: ell
         
         //modulnev+task osztály generálás futtatás
-        $this->task(); 
-        
+        $this->Task(); 
+   //   echo 'gggggggggggggggggggg'.$this->ADT['task'];
         // A :view feltöltése nyelvi elemekkel
-        $this->feltolt(); 
+       // $this->ChangeLT(); 
+        $this->ADT['dataT']['task']=$this->ADT['obNev'];
+        $this->ChangeData(); 
         
-	  
+       
+        
+        $this->ChangeLT();
         return $this->ADT['view'];
     }
  

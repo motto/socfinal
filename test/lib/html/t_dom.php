@@ -135,30 +135,32 @@ class T_szotar{
     	'label'=>'label ujvalue',	
     	'input1'=>'input1 ujvalue',
     	'hhjh'=>'hhjh ujvalue','link'=>'linkfelirat',
+    	'ltdat'=>'cerélt ltdat',
     	'submit'=>'submit ujvalue'		
     	];
     	$view=file_get_contents('test/view/testform.html',true);
     	echo \lib\html\dom\Dom_s::ChangeLT($view, $LT);
     
     } 
-    static public function changeDataT(){
+    static public function changeData(){
     	 
     	$LT=['text1'=>'text1 ujvalue',
     			'input1'=>'input1 ujvalue',
     			'label'=>'label ujvalue',
     			'input1'=>'input1 ujvalue',
     			'hhjh'=>'hhjh ujvalue','link'=>'linkhref',
+    	         'notedat'=>'cerélt notedat',
     			'cbox'=>'checkbox1','age'=>'radio2|radio2' //lehet tömb is!
     	];
     	$view=file_get_contents('test/view/testform.html',true);
-    	echo \lib\html\dom\Dom_s::ChangeDataT($view, $LT,'|');
+    	echo \lib\html\dom\Dom_s::ChangeData($view, $LT,'|');
     
     }
 }	
 echo "Test_Dom:------------- ";
 
-T_szotar::changeLT();
-//T_szotar::changeDataT();
+//T_szotar::changeLT();
+//T_szotar::changeData();
 //T_szotar::toArray();
 //T_szotar::getLTSelectedT();
 //T_szotar::getDataSelectedT();

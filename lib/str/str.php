@@ -1,5 +1,5 @@
 <?php
-namespace lib\base\str;
+namespace lib\str;
 defined( '_MOTTO' ) or die( 'Restricted access' );
 /**
 eval()-al átadhatóparaméterk az str_replace()-nek
@@ -11,6 +11,28 @@ static public $regx='"<<".$nev.">>", $val, $text';
 
 class STR
 {
+    /**
+tesztelve. A $text szöveget csseréli ki Az $LT megfelelő elemével utána ha van $changeT
+akkor a szövegben lévő <<>> elemeket csrél iki a $changeT megfelelő elemeire
+ Ha a $changeT kulcsa 'LT.'-vel kezdődik akor az értékét előbb becseréli a $LT tömbből 
+ és azzal cserli ki az <<>> elemet.
+     */
+static  public function Change($text,$changeT=[],$LT=[]){
+ // echo 'str::Change:'.$nev;   
+        if(isset($LT[$text])){$text=$LT[$text];}
+    
+        foreach ($changeT as $nev=>$val)
+        {   //echo 'str::Change: '.substr($nev,0,3);
+            if(substr($val,0,3)=='LT.')
+            {
+                $val=substr($val,3);
+                if(isset($LT[$val])){$val=$LT[$val];}
+            }
+            $text= str_replace('<<'.$nev.'>>', $val, $text);
+        }
+        return $text;
+    }    
+    
 	/**
 $regex-re illeszkedő tartalmak kigyüjtése pl.:$regex='/<div class=\"main\">([^`]*?)<\/div>/'
 kigyujti egy tömbbe a main osztályú div-ek tartalmát

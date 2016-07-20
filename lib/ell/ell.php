@@ -4,7 +4,7 @@ namespace lib\ell;
 /**
 Az  $ELL=new Ell; $ADT=$ELL->res($ADT,$TSK); formában App és modul ostályokban használható
  */
-class Ell
+/*class Ell
 {
 use \lib\ell\trt\Ell;
 public $ADT=[];
@@ -20,10 +20,10 @@ class Ell_login extends Ell
 {
 use \lib\ell\trt\Regx;
 use \lib\ell\trt\Ell_match;
-use \lib\ell\trt\DB_marvan;
-use \lib\ell\trt\DB_validPassvd;
+use \lib\ell\trt\DB_Marvan;
+use \lib\ell\trt\DB_ValidPasswd;
 	
-}
+}*/
 
 class Ell_STR
 { 

@@ -7,7 +7,7 @@ class Base
 előbb a böngészőtől kéri le az alapértelmezett nyelvet majd a 'SESSION','POST','GET' ben ellenőrzi 
 ha valamelyikben az adott érték és szerepel a CONF::$accepted_langT-ben azzal tér vissza
  */
-public static function setlang($lang)
+public static function setLang($lang)
 {
  if(isset($_SERVER['HTTP_ACCEPT_LANGUAGE']))
  {
