@@ -5,7 +5,8 @@ defined( '_MOTTO' ) or die( 'Restricted access' );
 class ADT{
 
 //fontos--------------------------
-public static $captcha=true;
+public static $captcha=false;
+public static $email=true;
 public static $appDir='mod/login';
 public static $task='alap';
 public static $tablanev='userek';
@@ -54,23 +55,25 @@ static public $belep=['trt'=>['mod\login\trt\task\Belep'],'next'=>'alap'];
 static public $jelszomail=['trt'=>['mod\login\trt\task\Alap']];
 static public $mailconfirm=['trt'=>['mod\login\trt\task\Alap']];
 static public $passwd_change=[
-'resfunc'=>'Save',
-'trt'=>['mod\login\trt\task\Save'],			
+'eval'=>'Save("passwdform","passwd_saved")',
+'trt'=>['mod\login\trt\task\Save'],
+ 'noSave'=>['oldpass'],    
 'ell'=>[]
 ];
 static public $regment=
 [
-'resfunc'=>'Save',
-'trt'=>['mod\login\trt\task\Save'],	
+'resfunc'=>'Save_Reg',   
+'trt'=>['mod\login\trt\task\Save_Reg'],	
 'next'=>'alap',		
-'ell'=>[]				
+'ell'=>[]
 ];
  
 }
-
+//ellenőrzések---------------------------
 TSK::$passwdchange['ell']=[
     'password'=>['regx'=>Regx::$passwd,'Match'=>'$_POST["password2"],"two_passwd_nomatch"'],
     'oldpass'=>['regx'=>Regx::$passwd,'ValidPasswd'=>'"passwd_nomatch"']
+//A task-nál kell megadni ('noSave') hogy a save függvény ne mentse, ne okozzon hibát a nem létező adatbázis mező
 ];
 
 

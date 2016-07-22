@@ -21,19 +21,26 @@ trait Task {
 			eval('$'.$modnev.'=new '.$modnev.'();');
 			
 			$$modnev->ADT=$this->ADT;
-			
+		//az alap funkció (Resfunc) előtt lefutó funkció (before)--------	
 		    if(isset($this->ADT['TSK'][$task]['before']))
 		    {$before_func= $this->ADT['TSK'][$task]['before'] ; $$modnev->$before_func();   }
-		    
+		 //az alap funkció (Resfunc)-------	   
 			$func=$this->func($modnev);
 			//echo '$func'.$func;
 			if($func=='')
 			{$task='';}
 			else{
 				//eval('$ADT=$'.$modnev.'->'.$func.'();');
-				$$modnev->$func();				
+				if(isset($this->ADT['TSK'][$task]['eval']))
+				{
+				    $func=isset($this->ADT['TSK'][$task]['eval']);
+				    eval('$'.$modnev.'->'.$func.';');
+				}
+				else
+				{$$modnev->$func();}
+								
 			}
-			
+		//az alap funkció (Resfunc) után lefutó funkció (after)--------	
 			if(isset($this->ADT['TSK'][$task]['after']))
 			{$after_func= $this->ADT['TSK'][$task]['after'] ; $$modnev->$after_func();   }	
 			

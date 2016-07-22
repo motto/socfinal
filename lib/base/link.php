@@ -77,7 +77,7 @@ a perjelet kérdőjelet eltávolítja; Ha paraméternek http:// nélküli limket
     	}
     	$csere=substr($cserestr, 0, -1);
     	//echo $csere;
-    	$base=self::GETtorolT($torolT);
+    	$base=self::GETtorolT($torolT,$link);
     	return $base.'&'.$csere;
     }
     

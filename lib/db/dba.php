@@ -97,7 +97,7 @@ figyelem, nem ellenőriz!! A dataT végijárva ($mezonev=>$value) beszúr és a 
 ha $test=true akkor nem ír be csak az sql-el tér vissza 
  */
     static public function beszur_tombbol($tabla,$dataT,$test=false)
-    {echo '--------------';
+    {//echo '--------------';
     	$value_string='';$mezo_string='';
     	$result=0;
     

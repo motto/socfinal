@@ -24,7 +24,7 @@ class Azonosit
         if($mezok=='') {$mezok=\GOB::$user_mezok;}
         $sql="SELECT ".$mezok." FROM userek WHERE id='".$userid."'";
         $userT= DB::assoc_sor($sql);
-        if(empty($userT)){\GOB::$hiba['userdata'][]='Az useradat lekérdezés üres tömböt adott vissza. SQL='.$sql;}
+        if(empty($userT)){\GOB::$logT['sysErr']['db']['Azonosit::set_userdata']=' Az useradat lekérdezés üres tömböt adott vissza. SQL='.$sql;}
         return $userT;
     }
 

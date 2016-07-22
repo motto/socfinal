@@ -20,11 +20,13 @@ public  function Ell()
 $task=$this->ADT['task'];
 $ellT=$this->ADT['TSK'][$task]['ell'];
 
-foreach ($ellT as $valnev=>$param){
+foreach ($ellT as $valnev=>$param)
+{
 	$bool=true;
 	if(isset($_POST[$valnev])){$this->val=$_POST[$valnev];}
 	
-	foreach ($param as $func=>$par){
+	foreach ($param as $func=>$par)
+	{
 		if($func=='regx'){
 			
 			foreach ($par as $parT)
@@ -47,8 +49,8 @@ foreach ($ellT as $valnev=>$param){
 		}
 				
 	}
-	$toSPT=$res['toSPT'] ?? true;
-	if($bool && $toSPT){$this->ADT['SPT'][$valnev]=$this->val;}
+	//$toSPT= $this->ADT['TSK'][$task]['ell']['toSPT'] ?? true;
+	if($bool) {$this->ADT['SPT'][$valnev]=$this->val;}
 	if(!$bool){$this->ADT['ellerr']=false;}
 		
 }

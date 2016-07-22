@@ -19,18 +19,20 @@ class Fejlec {
 	];
 	
 /**
- nincs visszatérési étéke feltölti a GOB::$html-t $partT-alapján 
- ha a $parT üres akkor a GOB::$headT alapján . a parT nek a kulcsaival megegyező
- cserestringet cseréli ki a $parT értékéből generált stringre. 
+ nincs visszatérési étéke feltölti a GOB::$html-t $parT-alapján 
+ ha a $parT üres akkor a GOB::$paramT alapján . a parT nek a kulcsaival megegyező
+ cserestringet cseréli ki a $parT értékéből generált stringre. engedélyezett cserestringek ['head','bodyhead','bodyfoot']
  Pl GOB::$headT['head'] tömbjéből képezett stringel, a GOB::$html  <!--|head|-->
 stringjét cseréli ki
  */	
 public function ChangeFull($parT=[])
 {
-    if(empty($parT)){$parT=\GOB::$headT;}
-    foreach($parT as $csereSTR=>$headT){
-	    \GOB::$html= str_replace('<!--|'.$csereSTR.'|-->',$this->StrFromArr($headT) ,\GOB::$html);
-	   	}	
+    if(empty($parT)){$parT=\GOB::$paramT;}
+    foreach($parT as $csereSTR=>$headT)
+    {
+        if(in_array($csereSTR, ['head','bodyhead','bodyfoot']))
+        {\GOB::$html= str_replace('<!--|'.$csereSTR.'|-->',$this->StrFromArr($headT) ,\GOB::$html);}
+	}	
 }
 public function StrFromArr($parT)
 {

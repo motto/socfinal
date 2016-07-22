@@ -2,10 +2,10 @@
 session_start();
 define("DS", "/"); define("_MOTTO", "igen");
 
-use  lib\db ;
+use lib\db ;
 use lib\jog\Azonosit;
 use lib\base\Base;
-use lib\html\Fejlec_s;
+//use lib\html\Fejlec_s;
 //use  lib\base ;
 
 include 'def.php';
@@ -20,15 +20,16 @@ $azon= new \lib\jog\Azonosit();
 GOB::$userT=$azon::set_userdata($_SESSION['userid'],'id,username,email,password ');
 GOB::set_userjog();
 
-GOB::$lang=Base::setLang(GOB::$lang);
+GOB::$lang=Base::setLang(CONF::$baseLang);
 
-if(isset($_GET['tmpl'])){GOB::$tmpl=$_GET['tmpl'];}
+GOB::$tmpl=$_GET['tmpl'] ?? CONF::$baseTmpl;
+
 
 //applikáció becsatolás-----------------------------
-GOB::$app='omni';
-if(isset($_POST['app'])){GOB::$app=$_POST['app'];}
-if(isset($_GET['app'])){GOB::$app=$_GET['app'];}
+GOB::$app=$_GET['app'] ?? CONF::$baseApp;
+//GOB::$app= $_POST['app'] ??  GOB::$app;
 include_once 'app/'.GOB::$app.'/'.GOB::$app.'.php';
 
-Fejlec_s::ChangeFull(\GOB::$headT);
+lib\html\Fejlec_s::ChangeFull(\GOB::$paramT);
+
 echo GOB::$html;

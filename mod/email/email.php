@@ -22,8 +22,9 @@ public $ADT=[
    'CharSet'=>'utf-8',
    'IsHTML'=>true, 
    'Subject'=>'Admin levél',
-    'funcT'=>['IsHTML'=>true],
-   'SMTPDebug'=>1 // debugging: 1 = errors and messages, 2 = messages only  
+    // 'SMTPDebug'=>1 ,// testeléshez: 1 = errors and messages, 2 = messages only  
+    'funcT'=>['IsHTML'=>true]
+  
 ];
 
 
@@ -49,7 +50,8 @@ public function __construct($parT = []){
      $mail->isSMTP();  
      $mail->SMTPAuth = true;
      $mail->Host= \CONF::$smtpHost;
-     $mail->SMTPDebug =$this->ADT['SMTPDebug'];
+     if(isset($this->ADT['SMTPDebug'])){$mail->SMTPDebug =$this->ADT['SMTPDebug'];}
+     
      $mail->SMTPSecure=\CONF::$SMTPSecure;
      $mail->Port=\CONF::$smtpPort;
      $mail->Username = \CONF::$smtpUser;
@@ -86,11 +88,16 @@ if(!$this->mail->send()) { $res=$this->mail->ErrorInfo;}
 
 class Email_S
 {
-
+    static public function simple($cim,$subject,$content){
+         
+        $mail=new Email();
+        //  print_r( $mail->ADT);
+        $mail->simple($cim,$subject,$content);
+    }
  static public function regConfirm($email,$id){
      
      $mail=new Email();
-     print_r( $mail->ADT);
+   //  print_r( $mail->ADT);
     $mail->simple($email, 'proba2', 'dfsdfhgsdf hsdgh fdh fdh fh fh');
  }   
     

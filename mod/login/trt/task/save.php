@@ -2,68 +2,78 @@
 namespace mod\login\trt\task;
 
 defined('_MOTTO') or die('Restricted access');
+// LT: reg_kesz,database_err,passwd_saved
 class Save_S{
-  static   public function SaveSPT($ADT,$err='database_err')
+  static   public function SaveFromSPT($ADT,$err='database_err')
     {
-        //$task=$this->ADT['task'];
-  
+        $task=$ADT['task'];
+        $ADT['saveRes']=true;
+        
             if(isset($ADT['SPT']['password']))
             {$ADT['SPT']['password']=md5($ADT['SPT']['password']);}
+            if(isset($ADT['TSK'][$task]['noSave']))
+            {
+              foreach($ADT['SPT'] as $key=>$value)
+              {
+                   if(!in_array($key,$ADT['TSK'][$task]['noSave']))
+                   {      
+                    $saveT[$key]=$value; 
+                   }  
+              }
+            }else{$saveT=$ADT['SPT'];}
+            
     
-            $beszurtid=\lib\db\DBA::beszur_tombbol($ADT['tablanev'],$ADT['SPT']);
+            $beszurtid=\lib\db\DBA::beszur_tombbol($ADT['tablanev'],$saveT);
             if($beszurtid==0)
             {
-                $ADT['LT']=\lib\base\TOMB::langTextToT('err',$err,$ADT['LT']);
-                 
+                 $ADT['saveRes']=false;
+                $ADT['LT']=\lib\base\TOMB::langTextToT('err',$err,$ADT['LT']);               
             }
- return $ADT;
+           else{$ADT['beszurtid']=$beszurtid;} 
+ return $ADT ;
     }    
     
 }
+trait Save{
+    use \mod\login\trt\Ell;
+public function Save($hibaTask,$info)
+    {   
+        $task=$this->ADT['task'];
+        $this->ADT['TSK'][$task]['next']=$hibaTask;
+        
 
+        if ($this->Ell()) {
 
-trait Save{ 
-use \mod\login\trt\Ell;
-static   public function Save()
-{
-
-    $task=$this->ADT['task'];
-
-    if ($this->Ell()) {
-        if(isset($this->ADT['SPT']['password']))
-        {$this->ADT['SPT']['password']=md5($this->ADT['SPT']['password']);}
-
-        $beszurtid=\lib\db\DBA::beszur_tombbol($this->ADT['tablanev'],$this->ADT['SPT']);
-        if($beszurtid==0)
-        {
-            $this->ADT['LT']=\lib\base\TOMB::langTextToT('err','database_err',$this->ADT['LT']);
+            $this->ADT=\mod\login\trt\task\Save_S::SaveFromSPT($this->ADT) ;
              
-            $this->ADT['TSK'][$task]['next']='regform';
+            if ($this->ADT['saveRes']) {
+                 
+                $this->ADT['LT'] =\lib\base\TOMB::langTextToT('info',$info,$this->ADT['LT']);
+                $this->ADT['TSK'][$task]['next']='alap';
+            }
+             
         }
-         
-    }else{$this->ADT['TSK'][$task]['next']='regform';}
+    }
+
+}
+
+trait Save_Reg{ 
+use \mod\login\trt\task\Save;
+use \mod\login\trt\Email;
+
+public function Save_Reg()
+{
+    $this->Save('regform','reg_kesz');
+    if ($this->ADT['saveRes'] && $this->ADT['email']) {
+       $this->Email() ;     
+    }
 }
 
 }
 trait Save_passwd{
-public function Save_passwd()
-{
-    //echo 'save-----------------------';
-    $task=$this->ADT['task'];
-    // $this->ADT['TSK'][$task]['next']='alap';
+use \mod\login\trt\task\Save; 
 
-    if ($this->Ell()) {
-        if(isset($this->ADT['SPT']['password']))
-        {$passwd=md5($this->ADT['SPT']['password']);
-        $sql="UPDATE userek SET password='".$passwd."' WHERE id='".$_SESSION['userid']."'";
-        if(!\lib\db\DBA::parancs($sql)){
-            
-        }
-        }
-        $this->ADT['TSK'][$task]['next']='alap';
-        }
-    else{$this->ADT['TSK'][$task]['next']='passwdform';}
-}
-
-
-}
+public function Save_passwd($info='passwd_saved')
+{ 
+     $this->Save('passwdform','passwd_saved');  
+}}

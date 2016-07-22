@@ -1,63 +1,89 @@
 <?php
 namespace mod\tabla;
-use lib\base\OB_Mo;
+
 use lib\base\LINK;
 defined( '_MOTTO' ) or die( 'Restricted access' );
 
 class ADT{
-//ikonok------------	
-public static $up='<span class="tabglyf glyphicon glyphicon-">';
-public static $down='<span class="tabglyf glyphicon glyphicon-chevron-down">';	
-public static $pub='<span class="tabglyf tpub glyphicon glyphicon-ok">';
-public static $unpub='<span class="tabglyf tunpub glyphicon glyphicon-remove">';
-}
-trait orderikon_glyph{
-	 public   function orderikon($mezonev,$rekord=[]){
-		$link=LINK::getcsere('rendez='.$mezonev);
-		$link=LINK::getcsere('tab='.$this->tablanev,$link);
-		$linkUp=LINK::getcsere('tab=',$link);
-		$linkUp=LINK::getcsere('order=up',$link);
-		$iconUp='<a href="'.$linkUp.'"></a>'.ADT::$up.'</a>';
-		$linkDown=LINK::getcsere('order=down',$link);
-		$iconDown='<a href="'.$linkDown.'"></a>'.ADT::$down.'</a>';
-		$html=$iconUp.$iconDown;
-		return $html;
-	}
-}
-class Tabla_handi{
-	 public  function link($mezonev,$rekord=[],$link){
-		
-	}
-	
-	
-	static public function pub_mezo($mezonev,$rekord=[])
-	{ 
-	if($rekord['pub']>0){return ADT::$pub;}
-	else{return ADT::$unpub;}
-	}
-  
-	static public function checkbox_mezo($mezonev,$rekord=[])
-    { 
-    return '<input type="checkbox" class="tabcheck" name="sor[]" value="'.$rekord['id'].'" />';  
-    }
-  
-	
-}
+    
+/**
+egyben a tasknév is Ellenőrizni kell a GOB::modT-ben és sorszámozni
+ */
+static public  $modnev='Tab';     
+static public  $glyph=True; //ha false képeket használ    
+static public  $rendez_sor=true;    
+static public  $fejlec=true;
+static public  $checkbox=true;
+static public  $pubikon=true;
+static public  $dataT;
+static public  $dataszerkT;
+/**
+ Ha egy rekordban azon a kulcso szerepel az az érték, akkor a rekord nem jelenik meg
+ PL ['name'=>['motto','Admin'],'id'=>['11']] (a felhasználók a mottto és az admin névvel  és a 11-es iddel nem jelennek meg  )
+ */
+static public  $norekordT=[];
+static public  $cssFile='';//elérési utat kell megadni ha sját css-akarunk
+static public  $css='';
+public static $trT=['lt_fromLT'];
+public static $iconDir='res/ico/16';
+public static $imagesT=['up'=>'up.png','down'=>'down.png','pub'=>'published.png','unpub'=>'unpublished.png'];
+public static $glyphT=['up'=>'chevron-up','down'=>'chevron-down','pub'=>'ok','unpub'=>'remove'];
+public static $LT=['up'=>'Fel','down'=>'Le','pub'=>'Pub','unpub'=>'Unpub','del'=>'Töröl'];
 
-class Tabla extends OB_Mo
+
+class Tabla 
 {
-	public  $tablanev='t1'; 
-    public  $datatomb;   
-    public  $dataszerk;
-    /**
-Ha egy rekordban azon a kulcso szerepel az az érték, akkor a rekord nem jelenik meg
-PL ['name'=>['motto','Admin'],'id'=>['11']] (a felhasználók a mottto és az admin névvel  és a 11-es iddel nem jelennek meg  )
-     */
-    public  $norekordT=[];
-    public  $fejlec=true;
-    public  $css='';//elérési utat kell megadni ha sját css-akarunk
-    public  $rendez_sor=true;
+    public $ADT=[];
+    public function __construct($parT=[]){
+        $this->ADT = get_class_vars('\mod\tabla\ADT');
 
+        foreach ($parT as $name => $value)
+        {$this->ADT[$name]=$value;}
+   
+    }
+    public function glyphIcon($task)
+    {   
+      $glyph=$this->ADT['glyphT'][$task] ?? '';
+      return '<span style="font-size: 1.6em;margin-bottom:10px;"
+        		class="glyphicon glyphicon-'.$glyph.'">';
+    }
+    public function imageIcon($task)
+    {
+        $img=$this->ADT['imagesT'][$task] ?? '';
+        return '<img src="'.$this->ADT['iconDir'].'/'.$img.'"/>';
+    }
+    public function ikon($task)
+    {       
+
+    if($this->ADT['glyph']){$icon=$this->glyphIcon($task);}
+    else{$icon=$this->imageIcon($task);}
+ 
+    return $icon;
+    }
+   public function checkbox_mezo($rekord=[])
+    {
+        return '<input type="checkbox" class="tabcheck" name="sor[]" value="'.$rekord['id'].'" />';
+    }
+    
+    public function pub_mezo($rekord=[])
+    {
+        if($rekord['pub']>0){return $this->ikon('pub');}
+        else{return $this->ikon('unpub');}
+    }
+    
+    public   function orderikon($mezonev){
+        $link =\lib\base\LINK::GETcsereT(['rendez'=>$mezonev,'mod'=>$mezonev]);
+    
+        $link=LINK::getcsere('rendez='.$mezonev);
+        $link=LINK::getcsere('tab='.$this->tablanev,$link);
+        $linkUp=LINK::getcsere('tab=',$link);
+        $linkUp=LINK::getcsere('order=up',$link);
+        $iconUp='<a href="'.$linkUp.'"></a>'.ADT::$up.'</a>';
+        $linkDown=LINK::getcsere('order=down',$link);
+        $iconDown='<a href="'.$linkDown.'"></a>'.ADT::$down.'</a>';
+        $html=$iconUp.$iconDown;
+        return $html;
+    }
 
     public function mezo($data="")
     {
@@ -68,7 +94,10 @@ PL ['name'=>['motto','Admin'],'id'=>['11']] (a felhasználók a mottto és az ad
     public function sor($datasor)
     {
         $html='<tr>';
-        foreach($this->dataszerk as $key=> $mezotomb)
+        if($this->ADT['checkbox']){$html.='<td></td>';}
+        if($this->ADT['pubikon']){$html.='<td></td>';}
+        
+        foreach($this->ADT['dataszerkT'] as $key=> $mezotomb)
         {
             $data=' ';   
             if(isset($datasor[$key])) {$data=$datasor[$key];}
@@ -82,32 +111,24 @@ PL ['name'=>['motto','Admin'],'id'=>['11']] (a felhasználók a mottto és az ad
     public function fejlec()
     {
         $html='<tr class="trfejlec">';
-        foreach($this->dataszerk as $mezonev=> $mezotomb)
+        if($this->ADT['checkbox']){$html.='<td></td>';}
+        if($this->ADT['pubikon']){$html.='<td></td>';}
+        foreach($this->ADT['dataszerkT']  as $mezonev => $mezotomb)
         {
-            if(isset($mezotomb['cim'])){$mezonev=$mezotomb['cim'];}
+           $mezonev=$mezotomb['cim'] ?? $mezonev;
            $this->mezo($mezonev);
-            if(!isset($mezotomb['noorder'])){ $html.=$this->rendez_sor;}
+           if(!isset($mezotomb['noorder'])){ $html.=$this->orderikon($mezonev);}
         }
         $html.="</tr>";
         return $html;
     }
-    public function rendez_sor()
+
+    public function Res()
     {
-        $html='<tr>';
-        foreach($this->dataszerk as $mezotomb)
-        {
-            $data=$this->rendez_mezo($mezotomb['cim']);
-            $html=$html.$this->mezo($data);
-        }
-        $html=$html.'</tr>';
-        return $html;
-    }
-    public function __toString()
-    {
-         $html='<table>';
+        $html='<table>';
         $html.=$this->fejlec();
-        $html.=$this->rendez_sor();
-        foreach($this->datatomb as $datasor)
+       // $html.=$this->rendez_sor();
+        foreach($this->ADT['dataT'] as $datasor)
         {
              $html.=$this->sor($datasor);
 

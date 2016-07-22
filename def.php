@@ -56,17 +56,27 @@ class CONF
     //public static $SMTPSecure = 'ssl';//// secure transfer enabled REQUIRED for Gmail
    
     //base--------------------
-    public static $app='omni';
-    public static $lang='hu';
-    public static $tmpl='social';
-    public static $basetmpl='flat';//egyenlőre nem használt----
+    public static $baseApp='omni';
+    public static $baseLang='hu';
+    public static $baseTmpl='omni';
     public static $title='Social';
 }
 
 class GOB
 { 
 	private static $userjog=Array();
-	public static $lang='hu';
+/**
+mindeféle paraméterek elhelyezése applikációknak ,modulok de a headT helyét is átvette
+js css og stb betöltése alapértelmezett kulcsok: $headT['head'],$headT['body'],$headT['bodyend']
+ a Fejlec_s::ChangeFull() függvény a kulcsoknak megfelelő html cserestringet (pl.:<!--|head|-->)
+  cseréli a tömbértékekből generált stringre
+   */  
+	public static $paramT=[];
+	public static $lang='';
+	public static $tmpl='';
+	public static $app='';
+	public static $db='';
+	public static $html='';
 /**
 ide regisztrálnak be a modulok hogy ne legyen két ugyanolyan nevű
 */
@@ -84,29 +94,17 @@ ki kell vezetni!! szerepét a $logT veszi át aminek egyike altömbje lesz: $log
     public static $userT=Array();
     
 /**
- ez alapján kéredzi le az usrtömböt($userT)
+ ez alapján kéredzi le az usertömböt($userT)
  */
-    public static $user_mezok='id,username,email,password';
-    public static $log_mod=true;
-    public static $db=null;
-    public static $LT=array(); //nyelvi tömb
-    public static $paramT=array();
-    public static $html=null;
+    public static $user_mezok='id,username,email';
     
-  /**
-//js css og stb betöltése alapértelmezett kulcsok: $headT['head'],$headT['body'],$headT['bodyend']
- a Fejlec_s::ChangeFull() függvény a kulcsoknak megfelelő html cserestringet (pl.:<!--|head|-->)
-  cseréli a tömbértékekből generált stringre
-   */  
-    public static $headT=[]; 
-
     /**
-     * @var string
      * '' (alapértelmezés) az adminok csak saját cikkeiket szerkeszthetik
      * 'kozos' az adminok egymás cikkeit szerkeszthetik
      * 'tulajdonos' Az adminok szerkeszthetnek minden cikket
      */
     public static $admin_mod='';
+    
     public static function get_userjog($jogname){
         if(in_array($jogname,self::$userjog)){return true;}
         else{return false;}

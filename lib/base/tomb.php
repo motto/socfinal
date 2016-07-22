@@ -18,7 +18,10 @@ usort($assocT, "sortByName");
 	
 		return ($a < $b) ? -1 : 1;
 	}
-	
+/**
+$LT tömb $key kulcsához fűzi a $text szöveget a $changeT értékeivel becseréli a <<>> tagokat
+pl.:$LT =\lib\base\TOMB::langTextToT('err','err_szoveg',$LT,$changeT=[]);
+ */	
 static 	public function langTextToT($key,$text,$LT=[],$changeT=[]){
 	    $err=\lib\str\STR::Change($text,$changeT,$LT);
 	    if($err!='')

@@ -1,5 +1,5 @@
 <?php
-
+namespace  mod\login\trt;
 defined( '_MOTTO' ) or die( 'Restricted access' );
 //futtatandó: Ell(); \lib\ell\trt\Ell;-ből
 trait Ell{
