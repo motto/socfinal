@@ -4,171 +4,129 @@ namespace mod\ikon;
 //defined( '_MOTTO' ) or die( 'Restricted access' );
 class ADT
 {
-public static $noikon='noikon.png'; 
-public static $noglyph='none';
-public static $modnev='Ikonsor';
+public static $noikon='noikon.png';  //Ha nincs az adott tasknak megfeleló kép
+public static $noglyph='none';       //Ha nincs az adott tasknak megfeleló glyph
+public static $modnev='Ico';
+public static $size='16';
+public static $class='';
+public static $css='';
+public static $js='';
 public static $tasknev='task';
+public static $label=true;
+public static $button=True; //ha false linket generál nem nyomógombot 
 public static $glyph=True; //ha false képeket használ 
 public static $trT=['lt_fromLT'];
-public static $iconDir='res/ico/16';
+public static $iconDir='res/ico/16/'; //kell a végére: /
 public static $imagesT=array('edit'=>'edit.png','new'=>'plusz.png','del'=>'torol.png','pub'=>'published.png','unpub'=>'unpublished.png','email'=>'email.png');    
-public static $glyphT=array('edit'=>'edit','new'=>'plus','del'=>'trash','pub'=>'ok-circle','unpub'=>'ban-circle','email'=>'envelope');
+public static $glyphT=array('down'=>'menu-down','up'=>'menu-up','edit'=>'edit','new'=>'plus','del'=>'trash','pub'=>'ok-circle','unpub'=>'ban-circle','email'=>'envelope');
 public static $LT=array('new'=>'Új','edit'=>'Szerk','pub'=>'Pub','unpub'=>'Unpub','del'=>'Töröl','email'=>'Email');
     
 }
-class Ikon
+trait Ikon_TR
 {
-    public $ADT=[];
-    public function __construct($parT=[])
+    public function initMO($parT)
     {
-        $this->ADT = get_class_vars('\mod\ikonsor\ADT');
-
+        $this->ADT = get_class_vars('\mod\ikon\ADT');
+        
         foreach ($parT as $name => $value)
         {$this->ADT[$name]=$value;}
-     
+         
+        \GOB::$paramT['head']['css'][]=$this->ADT['css'] ?? '';
+        \GOB::$paramT['head']['js'][]=$this->ADT['js'] ?? '';
+         
     }
+
+ 
     public function glyphIcon($task)
     {   
+        $sizeB=$this->ADT['size'] ?? '16';
+        $size=$sizeB/10;
         $noglyph=$this->ADT['noglyph'] ?? 'no';
         $glyph=$this->ADT['glyphT'][$task] ?? $noglyph;
-        return '<span style="font-size: 1.6em;margin-bottom:10px;"
-        		class="glyphicon glyphicon-'.$glyph.'">';
+        return '<span  style="font-size: '.$size.';margin-bottom:10px;"
+        		class="moikon '.$this->ADT['class'].' glyphicon glyphicon-'.$glyph.'"></span>';
     }
     public function imageIcon($task)
     {
         $noimage=$this->ADT['noikon'] ?? 'noimage.png';
         $img=$this->ADT['imagesT'][$task] ?? $noimage;
-        return '<img src="'.$this->ADT['iconDir'].'/'.$img.'"/>';
+        
+        return '<img class="moikon '.$this->ADT['class'].'" 
+            src="'.$this->ADT['iconDir'].$img.'"/>';
     }
 
-    public function ikon($task)
-    { 
-    if($this->ADT['glyph']){$icon=$this->glyphIcon($task);}
-    else{$icon=$this->imageIcon($task);}
-    return $icon;
-  ;
-    }
-    public function buttonIkon($task)
-    { 
-     $res='';
-    $res.=$this->ikon()
-    if(isset($this->ADT['LT'][$task]))
-    {$label=$this->ADT['LT'][$task];}
-    else{$label=$task;}
-    if($task=='torol'){ $oncl='onclick="return confirmSubmit(\'Az ok gombra kattintva a felhasználó végérvényesen törlődik!\')"';}
-    else{$oncl='';}
-    $res.='<button class="btkep" type="submit" name="'.$this->ADT['tasknev'].'"  value="'.$task.'" '.$oncl.'>'.$icon.'</span></br>'.$label.'</button>';
-    
-    return $res;
-    }
-    
-    
-    
-}    
-    class Ikonsor
+    public function Ikon($task)
     {
-        public $ADT=[];
-        public function __construct($parT=[]){
-            $this->ADT = get_class_vars('\mod\ikonsor\ADT');
-            //print_r($this->ADT);
-            foreach ($parT as $name => $value)
-            {$this->ADT[$name]=$value;}
-            /* $gobT=\GOB::$paramT['Ikonsor'] ?? [];
-             foreach ($gobT as $name => $value)
-             {$this->ADT[$name]=$value;}*/
-        }
-        public function glyphIcon($task)
-        {   $glyph=$this->ADT['glyphT'][$task] ?? $this->ADT['noglyph'];
-        return '<span style="font-size: 1.6em;margin-bottom:10px;"
-        		class="glyphicon glyphicon-'.$glyph.'">';
-        }
-        public function imageIcon($task)
-        {
-            $img=$this->ADT['imagesT'][$task] ?? $this->ADT['noikon'];
-            return '<img src="'.$this->ADT['iconDir'].'/'.$img.'"/>';
-        }
-    
-        public function buttonIkon($task)
-        {       $res='';
         if($this->ADT['glyph']){$icon=$this->glyphIcon($task);}
         else{$icon=$this->imageIcon($task);}
-        if(isset($this->ADT['LT'][$task]))
-        {$label=$this->ADT['LT'][$task];}
-        else{$label=$task;}
+        return $icon;
+
+    }
+
+}
+class Ikon
+{
+public $ADT=[];
+use \mod\ikon\Ikon_TR;
+public function __construct($parT=[])
+{
+ $this->initMO($parT);
+}
+}    
+trait  Ikon_button_TR 
+{
+
+    public function buttonIkon($task)
+    {
+        $icon=$this->ikon($task);
+        $label=[$task] ?? $task;
+        
+        if($this->ADT['label']){$label='</br>'.$label;}
+        else{$label='';} 
+        
         if($task=='torol'){ $oncl='onclick="return confirmSubmit(\'Az ok gombra kattintva a felhasználó végérvényesen törlődik!\')"';}
         else{$oncl='';}
-        $res.='<button class="btkep" type="submit" name="'.$this->ADT['tasknev'].'"  value="'.$task.'" '.$oncl.'>'.$icon.'</span></br>'.$label.'</button>';
-    
+        $res='<button class="btkep" type="submit" name="'.$this->ADT['tasknev'].'"  
+        value="'.$task.'" '.$oncl.'>'.$icon.$label.'</button>';
+
         return $res;
-        }
-    
-    
-    
-        public function Res($ikonsorT)
-        {
-            $res='<div style="float:right;margin:20px;">';
-            foreach ($ikonsorT as $task) {
-                $res.=  $this->ikon($task);
-            }
-            $res.='</div><div style="clear:both;"></div>';
-            return $res;
-        }
     }
-
-
-
-    public function Res($ikonsorT)
+    public function linkIkon($task,$link='')
     {
-        $res='<div style="float:right;margin:20px;">';
-        foreach ($ikonsorT as $task) {
-            $res.=  $this->ikon($task);
-        }
-        $res.='</div><div style="clear:both;"></div>';
+        if($link==''){ $link=\lib\base\LINK::GETcsereT([$this->ADT['tasknev']=>$task]); }
+        
+        $icon=$this->Ikon($task); 
+        $label=$this->ADT['LT'][$task] ?? $task;
+        
+        if($this->ADT['label']){$label='</br>'.$label;}
+        else{$label='';}
+        
+        if($task=='torol'){ $oncl='onclick="return confirmSubmit(\'Az ok gombra kattintva a felhasználó végérvényesen törlődik!\')"';}
+        else{$oncl='';}
+        
+        $res='<a class="btkep" href="'.$link.'"  '.$oncl.'>'.$icon.$label.'</a>';
+    
         return $res;
     }
-}
+    public function ButtonOrLink($task)
+    {
+       
+        if($this->ADT['button']){$icon=$this->glyphIcon($task);}
+        else{$icon=$this->imageIcon($link);}
+        return $icon;
+    
+    }
 
-
-class Ikon_sor
+}  
+class Ikon_button extends Ikon
 {
-public $ADT=[];    
-   public function __construct($parT=[]){
-       $this->ADT = get_class_vars('\mod\ikonsor\ADT');
-       //print_r($this->ADT);
-       foreach ($parT as $name => $value)
-		{$this->ADT[$name]=$value;}
-      /* $gobT=\GOB::$paramT['Ikonsor'] ?? [];
-		foreach ($gobT as $name => $value)
-		{$this->ADT[$name]=$value;}*/
-   }
-    public function glyphIcon($task)
-    {   $glyph=$this->ADT['glyphT'][$task] ?? $this->ADT['noglyph'];
-        return '<span style="font-size: 1.6em;margin-bottom:10px;"
-        		class="glyphicon glyphicon-'.$glyph.'">';
-    }  
-    public function imageIcon($task)
-    {  
-        $img=$this->ADT['imagesT'][$task] ?? $this->ADT['noikon'];
-         return '<img src="'.$this->ADT['iconDir'].'/'.$img.'"/>';
-    }
+use \mod\ikon\Ikon_button_TR;    
     
-    public function ikon($task)
-    {       $res='';
-            if($this->ADT['glyph']){$icon=$this->glyphIcon($task);}
-            else{$icon=$this->imageIcon($task);}
-            if(isset($this->ADT['LT'][$task]))
-            {$label=$this->ADT['LT'][$task];}
-            else{$label=$task;}
-            if($task=='torol'){ $oncl='onclick="return confirmSubmit(\'Az ok gombra kattintva a felhasználó végérvényesen törlődik!\')"';}
-            else{$oncl='';}
-            $res.='<button class="btkep" type="submit" name="'.$this->ADT['tasknev'].'"  value="'.$task.'" '.$oncl.'>'.$icon.'</span></br>'.$label.'</button>';
- 
-        return $res;
-    }
-    
-    
-    
-    public function Res($ikonsorT)
+}
+trait Ikon_sor_TR 
+{
+
+    public function Button($ikonsorT)
     {
         $res='<div style="float:right;margin:20px;">';
         foreach ($ikonsorT as $task) {
@@ -178,19 +136,32 @@ public $ADT=[];
         return $res;
     }
 }
-class Ikonsor_S
+class Ikon_sor extends Ikon_button
 {
-    public  static function Ikon($task='edit',$parT=[]){
-        $ob=new Ikonsor($parT);
+    use \mod\ikon\Ikon_button_TR;
+
+}
+
+class Ikon_S
+{
+    public  static function Ikon($task,$parT=[]){
+        $ob=new Ikon($parT);
         return $ob->ikon($task);
     
     }
-    public  static function Res($ikonsorT=['new','edit','del','pub','unpub'],$parT=[]){
-        $ob=new Ikonsor($parT);
-        return $ob->Res($ikonsorT);
+    public  static function linkIkon($link,$parT=[]){
+        $ob=new Ikon_button($parT);
+        return $ob->linkIkon($link);
+    
+    }
+    
+    
+    public  static function ButtonSor($ikonsorT=['new','edit','del','pub','unpub'],$parT=[]){
+        $ob=new Ikon_sor($parT);
+        return $ob->Button($ikonsorT);
         
     }
 }
-
-echo Ikonsor_S::Ikon();
+//echo Ikon_S::linkIkon('linkdel');
+//
 //echo Ikonsor_S::Res();

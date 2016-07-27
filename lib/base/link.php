@@ -11,7 +11,7 @@ a perjelet kérdőjelet eltávolítja; Ha paraméternek http:// nélküli limket
  */
 	static public function baselink($link='',$full=false)
     {	$urlhost='';$urlpath='';
-   		if($link==''){$link=$_SERVER['REQUEST_URI'];}
+   		if($link==''){$link=$_SERVER['REQUEST_URI']; }
 		$urlT=parse_url($link);
 		//echo $urlT['path'];
 		if(isset($urlT['host'])){$urlhost=$urlT['host'];}
@@ -84,7 +84,7 @@ a perjelet kérdőjelet eltávolítja; Ha paraméternek http:// nélküli limket
 /**
 régi, paramétere string csak egyet tud cserélni nincs tesztelve
  */    
-    static public function getcsere($csere,$link='')
+    static public function GETcsere($csere,$link='')
     {
         if($link==''){$link=$_SERVER['REQUEST_URI'];}
         // echo $link;

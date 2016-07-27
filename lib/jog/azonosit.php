@@ -19,10 +19,10 @@ class Azonosit
         if(!isset($_SESSION['userid'])) {$_SESSION['userid']=0;}
 
     }
-    public static function set_userdata($userid,$mezok='id,username,email,password')
+    public static function set_userdata($userid,$user_mezok='')
     {
-        if($mezok=='') {$mezok=\GOB::$user_mezok;}
-        $sql="SELECT ".$mezok." FROM userek WHERE id='".$userid."'";
+        if($user_mezok==''){$user_mezok=\GOB::$user_mezok;}
+        $sql="SELECT ".$user_mezok." FROM userek WHERE id='".$userid."'";
         $userT= DB::assoc_sor($sql);
         if(empty($userT)){\GOB::$logT['sysErr']['db']['Azonosit::set_userdata']=' Az useradat lekérdezés üres tömböt adott vissza. SQL='.$sql;}
         return $userT;

@@ -46,7 +46,7 @@ static public function  mezoToKey($dataT,$mezo='id'){
 		}
 		return $resT;
 	}
-    static public function to_str($tomb)
+static public function to_str($tomb)
     {
         $str = '';
         foreach ($tomb as $key => $value)
@@ -61,5 +61,21 @@ static public function  mezoToKey($dataT,$mezo='id'){
         }
         return $str;
     }
-   
+  /**
+félig kész
+   */  
+  static public function to_LTstr($tomb,$kulcsok=['kep','cim','intro'])
+    {  
+      foreach ($matches[1] as $match){
+        $T=explode('-o-->', $match);
+      $text.=PHP_EOL."'".$T[0]."'=>[";  
+       // if(strlen("Hello")>50){$text.=PHP_EOL;}
+     $text.=PHP_EOL."'".$this->baseLang."'=>'".$T[1]."',";
+     $text.=PHP_EOL."'".$this->ujLang."'=>'  '";
+     $text.=PHP_EOL."],";
+    }
+    $text=substr($text, 0, -1) ;
+    $text.=']';
+    return  $text;
+    } 
 }

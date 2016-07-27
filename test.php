@@ -14,8 +14,10 @@ class GOBT{
     use mod\login\trt\Email;
 	static public  $resT;
 }
-$ff=new GOBT();
-$ff->Email();
+//echo mod\ikon\Ikon_S::Ikon('del');
+echo mod\ikon\Ikon_S::linkIkon('linkdel');
+//$ff=new GOBT();
+//$ff->Email();
 //mod\email\Email_S::regConfirm('menkuotto@gmail.com','152');
 //include 'test/lib/str/t_str.php';
 //include 'test/lib/base/t_task.php';

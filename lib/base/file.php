@@ -40,14 +40,27 @@ static public function  readCSV_assocT($filepath,$sep=',',$mezoT=[]){
 		return $fileT;
 	}
 	
+static public function dirLista($dir){
+	    $fileT=[];
+	    if ($handle = opendir($dir)) {
+	        while (false !== ($entry = readdir($handle))) {
 	
-static public function  lista($dir,$nodir=true){
+	            if ($entry != "." && $entry != "..") {
+	                if(is_dir($dir.'/'.$entry)){$fileT[]=$entry;}
+	               
+	            }
+	        }
+	        closedir($handle);
+	    }
+	    return $fileT;
+	}	
+static public function  lista($dir,$dirAllow=true){
 		$fileT=[];
 		if ($handle = opendir($dir)) {
 		while (false !== ($entry = readdir($handle))) {
 	
 				if ($entry != "." && $entry != "..") {
-					if(is_dir($dir.'/'.$entry)){if(!$nodir){$fileT[]=$entry;}}
+					if(is_dir($dir.'/'.$entry)){if($dirAllow){$fileT[]=$entry;}}
 					else{$fileT[]=$entry;}
 				}
 			}
@@ -56,7 +69,7 @@ static public function  lista($dir,$nodir=true){
 		return $fileT;
 	}	
 
-static public function  allowlista($dir,$allowT=[]){
+static public function  allowedFileLista($dir,$allowT=[]){
 		$fileT=[];
 		if ($handle = opendir($dir)) {
 			while (false !== ($entry = readdir($handle))) {

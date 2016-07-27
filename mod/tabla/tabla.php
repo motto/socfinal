@@ -29,7 +29,7 @@ public static $iconDir='res/ico/16';
 public static $imagesT=['up'=>'up.png','down'=>'down.png','pub'=>'published.png','unpub'=>'unpublished.png'];
 public static $glyphT=['up'=>'chevron-up','down'=>'chevron-down','pub'=>'ok','unpub'=>'remove'];
 public static $LT=['up'=>'Fel','down'=>'Le','pub'=>'Pub','unpub'=>'Unpub','del'=>'Töröl'];
-
+}
 
 class Tabla 
 {

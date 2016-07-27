@@ -38,14 +38,14 @@ class CONF
     public static $host = 'localhost';
     public static $felhasznalonev = 'root';
     public static $jelszo = '';
-    public static $adatbazis = 'social';
+    public static $adatbazis = 'omnihund';
     //mail-------------------------------
     public static $mailfrom= 'motto001@gmail.com';
     public static $fromnev= 'Admin';
     //smtp-----------------------------
     public static $smtpHost= 'smtp.processnet.hu'; //null vagy '', ha nem használ smtp-t
     public static $smtpPort= 26;
-    public static $smtpUser= 'kapcsolat@socialbittap.com';
+    public static $smtpUser= 'kapcsolat@omnihund.com';
     public static $smtpPasswd= 'aaaaaa';
     public static $SMTPSecure = 'tls'; //vagy ssl
     //gmailsmtp-------------------------------
@@ -60,6 +60,11 @@ class CONF
     public static $baseLang='hu';
     public static $baseTmpl='omni';
     public static $title='Social';
+/**
+ha nincs $user_SQL ez alapján csinál. Csak az userek tábla mezői használhatók!
+ */
+    public static $user_mezok='id,username,email';
+
 }
 
 class GOB
@@ -96,7 +101,8 @@ ki kell vezetni!! szerepét a $logT veszi át aminek egyike altömbje lesz: $log
 /**
  ez alapján kéredzi le az usertömböt($userT)
  */
-    public static $user_mezok='id,username,email';
+    public static $user_mezok='';
+    public static $user_SQL='';
     
     /**
      * '' (alapértelmezés) az adminok csak saját cikkeiket szerkeszthetik
@@ -114,3 +120,6 @@ ki kell vezetni!! szerepét a $logT veszi át aminek egyike altömbje lesz: $log
     }
 
 }
+GOB::$user_mezok=CONF::$user_mezok;
+
+

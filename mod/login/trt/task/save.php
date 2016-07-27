@@ -26,7 +26,7 @@ class Save_S{
             $beszurtid=\lib\db\DBA::beszur_tombbol($ADT['tablanev'],$saveT);
             if($beszurtid==0)
             {
-                 $ADT['saveRes']=false;
+                $ADT['saveRes']=false;
                 $ADT['LT']=\lib\base\TOMB::langTextToT('err',$err,$ADT['LT']);               
             }
            else{$ADT['beszurtid']=$beszurtid;} 

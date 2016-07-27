@@ -5,7 +5,7 @@ defined( '_MOTTO' ) or die( 'Restricted access' );
 class ADT{
 
 //fontos--------------------------
-public static $captcha=false;
+public static $captcha=True;
 public static $email=true;
 public static $appDir='mod/login';
 public static $task='alap';

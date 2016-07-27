@@ -17,7 +17,7 @@ db\Connect::connect();//GOB::$db-be létrehozza az adatbázis objektumot
 //azonosítás-------------
 if(isset($_POST['ltask']) && $_POST['ltask']=='kilep'){ $_SESSION['userid'] = 0;}
 $azon= new \lib\jog\Azonosit();
-GOB::$userT=$azon::set_userdata($_SESSION['userid'],'id,username,email,password ');
+GOB::$userT=$azon::set_userdata($_SESSION['userid']);
 GOB::set_userjog();
 
 GOB::$lang=Base::setLang(CONF::$baseLang);
